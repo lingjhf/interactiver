@@ -1,0 +1,36 @@
+{
+  "name": "@interactiver/view",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "docs": "npm -C docs run docs:dev",
+    "play": "npm -C playground run dev",
+    "lint": "eslint --ext .ts,.tsx,.js,.mjs .",
+    "format": "pnpm lint --fix",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@interactiver/view": "workspace:*",
+    "d3": "^7.8.5",
+    "dagre": "^0.8.5",
+    "hammerjs": "^2.0.8",
+    "hotkeys-js": "^3.13.7",
+    "solid-js": "^1.8.5",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@papaya-app/eslint-config": "^0.3.2",
+    "@types/d3": "^7.4.3",
+    "@types/dagre": "^0.7.49",
+    "@types/hammerjs": "^2.0.45",
+    "@types/node": "^20.11.24",
+    "@types/uuid": "^9.0.8",
+    "@vitest/ui": "^1.4.0",
+    "typescript": "^5.3.3",
+    "unocss": "^0.58.6",
+    "vite": "^5.1.4",
+    "vite-plugin-solid": "^2.7.2",
+    "vitest": "^1.4.0"
+  }
+}
