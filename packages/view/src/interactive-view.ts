@@ -1,22 +1,15 @@
-import Hammer from 'hammerjs'
-
 import { createElement } from './utils'
 
 export class InteractiveView {
   constructor(element: HTMLElement) {
-    this.element = createElement('svg')
-    element.appendChild(this.element)
-    this.element.style.width = '100%'
-    this.element.style.height = '100%'
-    this._hm = new Hammer(this.element)
-    const canEnable = (recognizer: Recognizer, inputData: HammerInput) => {
-      console.log('Ok', recognizer)
-      return true
-    }
-    this._hm.add(new Hammer.Pan({ enable: canEnable }))
+    const svg = createElement('svg')
+    svg.style.width = '100%'
+    svg.style.height = '100%'
+    element.appendChild(svg)
+    this.element = createElement('g')
+    this.element.setAttribute('transform', 'translate(0,0) scale(0.1)')
+    svg.appendChild(this.element)
   }
 
-  readonly element: SVGSVGElement
-
-  private _hm: HammerManager
+  readonly element: SVGGElement
 }

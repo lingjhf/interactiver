@@ -9,13 +9,6 @@ type TreeLayoutNodeMap = Map<string, TreeLayoutNode>
 type TreeLayoutEdgeMap = Map<string, Edge<TreeLayoutNode>>
 
 export class TreeLayout {
-  constructor(root: TreeLayoutNode) {
-    this._root = root
-  }
-
-  // 根节点
-  private _root: TreeLayoutNode
-
   private _graph = new dagre.graphlib.Graph()
 
   private _nodeMap: TreeLayoutNodeMap = new Map()
@@ -99,18 +92,6 @@ export class TreeLayout {
     this._edgeMap.clear()
     return this
   }
-
-  /**
-   *
-   *
-   * @returns
-   */
-  reset(): this {
-    this._nodeMap.clear()
-    this._edgeMap.clear()
-    this.add(this._root)
-    return this
-  }
 }
 
 export interface TreeLayoutNodeOptions extends NodeOptions<TreeLayoutNode> {
@@ -124,7 +105,7 @@ export class TreeLayoutNode extends Node<TreeLayoutNode> {
     super(options)
     this._layout = layout
     this._offset = options?.offset ?? 0
-    this._limit = options?.limit ?? this._children.size
+    this._limit = options?.limit ?? 10
     this._expand = options?.expand ?? true
     this._setVisibleChildren()
   }

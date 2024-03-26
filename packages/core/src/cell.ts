@@ -33,6 +33,14 @@ export class Cell {
     return this._height
   }
 
+  get x(): number {
+    return this.position.x
+  }
+
+  get y(): number {
+    return this.position.y
+  }
+
   /**
    * 设置节点宽度
    *

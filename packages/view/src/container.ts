@@ -1,14 +1,18 @@
-import { Node } from '@interactiver/core'
+import { Node, NodeOptions } from '@interactiver/core'
 
 import { createElement } from './utils'
 
-export class Container extends Node {
-  readonly element = createElement('g')
+export type ContainerOptions = NodeOptions<Container>
+export class Container extends Node<Container> {
+  constructor(options?: ContainerOptions) {
+    super(options)
+    this.element = createElement('g')
+  }
+
+  readonly element: SVGGElement
 
   render(): this {
-    this.element.style.width = `${this.width}px`
-    this.element.style.height = `${this.height}px`
-    this.element.style.transform = `translate(${this.position.x},${this.position.y})`
+    this.element.setAttribute('transform', `translate(${this.position.x},${this.position.y})`)
     return this
   }
 }

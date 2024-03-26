@@ -1,5 +1,6 @@
 export * from './brush'
 export * from './cell'
+export * from './curves'
 export * from './draggable'
 export * from './edge'
 export * from './node'
