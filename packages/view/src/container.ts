@@ -2,17 +2,20 @@ import { Node, NodeOptions } from '@interactiver/core'
 
 import { createElement } from './utils'
 
-export type ContainerOptions = NodeOptions<Container>
+export interface ContainerOptions extends NodeOptions<Container> {
+  onDrag?: () => void,
+}
 export class Container extends Node<Container> {
   constructor(options?: ContainerOptions) {
     super(options)
     this.element = createElement('g')
+    this._render()
   }
 
   readonly element: SVGGElement
 
-  render(): this {
-    this.element.setAttribute('transform', `translate(${this.position.x},${this.position.y})`)
+  private _render(): this {
+    this.element.setAttribute('transform', `translate(${this.x},${this.y})`)
     return this
   }
 }

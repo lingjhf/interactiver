@@ -17,17 +17,18 @@ function App() {
   generateTree(treeLayout, 5)
   treeLayout.layout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 })
   function initInteractiveView(el: HTMLDivElement) {
-    const interactiveView = new InteractiveView(el)
+    const interactiveView = new InteractiveView(el, { width: 600, height: 600 })
+    interactiveView.zoom.setAll(0.1)
     const containers = treeLayout.nodes.map(
       node =>
-        renderNode(new Container({ id: node.id, x: node.position.x, y: node.position.y, width: node.width, height: node.height }).render()),
+        renderNode(new Container({ id: node.id, x: node.x, y: node.y, width: node.width, height: node.height })),
     )
     interactiveView.element.append(...containers)
   }
 
   return (
     <div class='h-2000px w-2000px'>
-      <div class='w-500px h-500px bg-blue-400' ref={initInteractiveView}>
+      <div class=' bg-blue-400' ref={initInteractiveView}>
       </div>
     </div>
   )

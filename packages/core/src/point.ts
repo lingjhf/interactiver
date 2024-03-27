@@ -1,10 +1,13 @@
+import { Mitt } from './events'
+
 export interface PointOptions {
   x?: number,
   y?: number,
 }
 
-export class Point {
+export class Point extends Mitt<{ change: void, }> {
   constructor(options?: PointOptions) {
+    super()
     this._x = options?.x ?? 0
     this._y = options?.y ?? 0
   }
@@ -28,6 +31,7 @@ export class Point {
     if (point?.y !== undefined) {
       this._y = point.y
     }
+    this.emit('change')
     return this
   }
 

@@ -1,3 +1,4 @@
+import { Mitt } from './events'
 import { Point } from './point'
 
 export interface ZoomOptions {
@@ -5,8 +6,9 @@ export interface ZoomOptions {
   y?: number,
 }
 
-export class Zoom {
+export class Zoom extends Mitt<{ change: void, }> {
   constructor(options?: ZoomOptions) {
+    super()
     this._x = options?.x ?? 1
     this._y = options?.y ?? 1
   }
@@ -30,12 +32,12 @@ export class Zoom {
     if (value.y !== undefined) {
       this._y = value.y
     }
+    this.emit('change')
     return this
   }
 
   setAll(value: number): this {
-    this.set({ x: value, y: value })
-    return this
+    return this.set({ x: value, y: value })
   }
 
   /** 放大
@@ -44,9 +46,7 @@ export class Zoom {
    * @returns
    */
   in(value: number): this {
-    this._x *= value
-    this._y *= value
-    return this
+    return this.set({ x: this._x * value, y: this._y * value })
   }
 
   /** 缩小
@@ -55,9 +55,7 @@ export class Zoom {
    * @returns
    */
   out(value: number): this {
-    this._x /= value
-    this._y /= value
-    return this
+    return this.set({ x: this._x / value, y: this._y / value })
   }
 }
 
