@@ -1,29 +1,32 @@
-import { TreeLayout } from '@interactiver/core'
-import { InteractiveView, Container, createElement } from '@interactiver/view'
+import { generateLRCurve } from '@interactiver/core'
+import { InteractiveView, Container, createElement, Tree } from '@interactiver/view'
 
 import { generateTree } from './utils'
 
-function renderNode(container: Container): SVGGElement {
-  const background = createElement('rect')
-  background.setAttribute('width', `${container.width}px`)
-  background.setAttribute('height', `${container.height}px`)
-  background.setAttribute('color', 'blue')
-  container.element.appendChild(background)
-  return container.element
-}
-
 function App() {
-  const treeLayout = new TreeLayout()
-  generateTree(treeLayout, 5)
-  treeLayout.layout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 })
+  const tree = new Tree(layout => generateTree(layout, 5), {
+    renderNode(node) {
+      const container = new Container({ id: node.id, x: node.x, y: node.y, width: node.width, height: node.height })
+      const background = createElement('rect')
+      background.setAttribute('width', `${container.width}px`)
+      background.setAttribute('height', `${container.height}px`)
+      background.setAttribute('color', 'blue')
+      container.element.appendChild(background)
+      return container.element
+    },
+    renderEdge(edge) {
+      const line = createElement('path')
+      line.setAttribute('d', generateLRCurve(edge).toString())
+      line.setAttribute('fill', 'none')
+      line.setAttribute('stroke-width', '2')
+      line.setAttribute('stroke', 'black')
+      return line
+    },
+  })
   function initInteractiveView(el: HTMLDivElement) {
     const interactiveView = new InteractiveView(el, { width: 600, height: 600 })
     interactiveView.zoom.setAll(0.1)
-    const containers = treeLayout.nodes.map(
-      node =>
-        renderNode(new Container({ id: node.id, x: node.x, y: node.y, width: node.width, height: node.height })),
-    )
-    interactiveView.element.append(...containers)
+    interactiveView.element.append(...tree.layout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 }).elements)
   }
 
   return (
