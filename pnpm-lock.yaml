@@ -76,13 +76,33 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1(@algolia/client-search@4.22.1)(@types/node@20.11.30)(postcss@8.4.37)(search-insights@2.13.0)(typescript@5.4.2)
 
-  packages/core: {}
+  packages/core:
+    dependencies:
+      d3:
+        specifier: ^7.8.5
+        version: 7.9.0
+      dagre:
+        specifier: ^0.8.5
+        version: 0.8.5
+      mitt:
+        specifier: ^3.0.1
+        version: 3.0.1
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
 
   packages/gestures: {}
 
   packages/keyboard: {}
 
-  packages/view: {}
+  packages/view:
+    dependencies:
+      '@interactiver/core':
+        specifier: ^0.0.1
+        version: link:../core
+      hammerjs:
+        specifier: ^2.0.8
+        version: 2.0.8
 
   playground: {}
 
