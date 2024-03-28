@@ -23,16 +23,16 @@ export class Tree {
   autoLayout(options: TreeGraphLabel): this {
     this.layout.layout(options)
     this.elements = []
-    for (const node of this.layout.nodes) {
-      const n = this._renderNode?.(node)
-      if (n) {
-        this.elements.push(n)
-      }
-    }
     for (const edge of this.layout.edges) {
       const e = this._renderEdge?.(edge)
       if (e) {
         this.elements.push(e)
+      }
+    }
+    for (const node of this.layout.nodes) {
+      const n = this._renderNode?.(node)
+      if (n) {
+        this.elements.push(n)
       }
     }
     return this
