@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 
-import { Cell } from '.'
+import { Cell } from './cell'
 import { Edge } from './edge'
 import { Point } from './point'
 

@@ -1,6 +1,6 @@
 import { Node, NodeOptions } from '@interactiver/core'
 
-import { createElement } from './utils'
+import { createElement } from './element'
 
 export interface ContainerOptions extends NodeOptions<Container> {
   onDrag?: () => void,

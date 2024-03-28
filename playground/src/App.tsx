@@ -1,5 +1,4 @@
-import { generateLRCurve } from '@interactiver/core'
-import { InteractiveView, Container, createElement, Tree } from '@interactiver/view'
+import { InteractiveView, Container, createElement, Tree, createCurve } from '@interactiver/view'
 
 import { generateTree } from './utils'
 
@@ -19,9 +18,7 @@ function App() {
         return container.element
       },
       renderEdge(edge) {
-        const line = createElement('path')
-        line.setAttribute('d', generateLRCurve(edge).toString())
-        line.setAttribute('fill', 'none')
+        const line = createCurve('LR', edge)
         line.setAttribute('stroke-width', '2')
         line.setAttribute('stroke', '#fff')
         return line

@@ -1,7 +1,7 @@
 import { Draggable, Zoom, Point, focusZoom } from '@interactiver/core'
 import Hammer from 'hammerjs'
 
-import { createElement } from './utils'
+import { createElement } from './element'
 
 export interface InteractiveViewOptions {
   width?: number | string,
