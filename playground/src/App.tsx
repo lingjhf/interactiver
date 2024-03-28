@@ -3,7 +3,7 @@ import { InteractiveView, Container, createElement, Tree, createCurve } from '@i
 import { generateTree } from './utils'
 
 function App() {
-  const tree = new Tree(layout => generateTree(layout, 5),
+  const tree = new Tree(
     {
       renderNode(node) {
         const container = new Container({ id: node.id, x: node.x, y: node.y, width: node.width, height: node.height })
@@ -24,10 +24,11 @@ function App() {
         return line
       },
     })
+  generateTree(tree.layout, 5)
   function initInteractiveView(el: HTMLDivElement) {
     const interactiveView = new InteractiveView(el)
     interactiveView.zoom.setAll(0.03)
-    interactiveView.element.append(...tree.layout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 }).elements)
+    interactiveView.element.append(...tree.autoLayout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 }).elements)
   }
 
   return (

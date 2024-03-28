@@ -6,14 +6,13 @@ export interface TreeOptions {
 }
 
 export class Tree {
-  constructor(init: (layout: TreeLayout) => void, options?: TreeOptions) {
-    this._layout = new TreeLayout()
-    init(this._layout)
+  constructor(options?: TreeOptions) {
+    this.layout = new TreeLayout()
     this._renderNode = options?.renderNode
     this._renderEdge = options?.renderEdge
   }
 
-  private _layout: TreeLayout
+  readonly layout: TreeLayout
 
   private _renderNode?: (node: TreeLayoutNode) => void
 
@@ -21,16 +20,16 @@ export class Tree {
 
   elements: SVGGraphicsElement[] = []
 
-  layout(options: TreeGraphLabel): this {
-    this._layout.layout(options)
+  autoLayout(options: TreeGraphLabel): this {
+    this.layout.layout(options)
     this.elements = []
-    for (const node of this._layout.nodes) {
+    for (const node of this.layout.nodes) {
       const n = this._renderNode?.(node)
       if (n) {
         this.elements.push(n)
       }
     }
-    for (const edge of this._layout.edges) {
+    for (const edge of this.layout.edges) {
       const e = this._renderEdge?.(edge)
       if (e) {
         this.elements.push(e)
