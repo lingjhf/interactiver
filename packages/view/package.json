@@ -1,7 +1,7 @@
 {
   "name": "@interactiver/view",
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -20,6 +20,6 @@
   },
   "dependencies": {
     "hammerjs": "^2.0.8",
-    "@interactiver/core": "^0.0.3"
+    "@interactiver/core": "^0.0.5"
   }
 }
