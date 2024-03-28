@@ -14,9 +14,7 @@ type _Node = Node
 export class Node<C extends _Node = _Node> extends Cell {
   constructor(options?: NodeOptions<C>) {
     super(options)
-    for (const child of options?.children ?? []) {
-      this._children.set(child.id, child)
-    }
+    this._addChildren(...(options?.children ?? []))
   }
 
   protected _parent?: C
@@ -51,10 +49,7 @@ export class Node<C extends _Node = _Node> extends Cell {
    * @returns
    */
   add(...children: C[]): this {
-    for (const child of children) {
-      child.setParent(this)
-      this._children.set(child.id, child)
-    }
+    this._addChildren(...children)
     return this
   }
 
@@ -78,6 +73,14 @@ export class Node<C extends _Node = _Node> extends Cell {
    */
   clear(): this {
     this._children.clear()
+    return this
+  }
+
+  private _addChildren(...children: C[]): this {
+    for (const child of children) {
+      child.setParent(this)
+      this._children.set(child.id, child)
+    }
     return this
   }
 }

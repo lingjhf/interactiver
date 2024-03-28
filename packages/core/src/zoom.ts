@@ -4,6 +4,8 @@ import { Point } from './point'
 export interface ZoomOptions {
   x?: number,
   y?: number,
+  max?: number,
+  min?: number,
 }
 
 export class Zoom extends Mitt<{ change: void, }> {
@@ -11,11 +13,17 @@ export class Zoom extends Mitt<{ change: void, }> {
     super()
     this._x = options?.x ?? 1
     this._y = options?.y ?? 1
+    this._max = options?.max ?? 10
+    this._min = options?.min ?? 0.001
   }
 
   private _x: number
 
   private _y: number
+
+  private _max: number
+
+  private _min: number
 
   get x(): number {
     return this._x
@@ -26,10 +34,10 @@ export class Zoom extends Mitt<{ change: void, }> {
   }
 
   set(value: { x?: number, y?: number, }): this {
-    if (value.x !== undefined) {
+    if (value.x !== undefined && value.x < this._max && value.x > this._min) {
       this._x = value.x
     }
-    if (value.y !== undefined) {
+    if (value.y !== undefined && value.y < this._max && value.y > this._min) {
       this._y = value.y
     }
     this.emit('change')
