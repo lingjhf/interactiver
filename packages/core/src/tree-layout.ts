@@ -108,9 +108,6 @@ export class TreeLayoutNode extends Node<TreeLayoutNode> {
     this._limit = options?.limit ?? 10
     this._expand = options?.expand ?? true
     this._setVisibleChildren()
-    if (!this._parent) {
-      this._layout.add(this)
-    }
   }
 
   private _layout: TreeLayout

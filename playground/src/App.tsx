@@ -24,7 +24,8 @@ function App() {
         return line
       },
     })
-  generateTree(tree.layout, 5)
+  const res = generateTree(tree.layout, 5)
+  tree.layout.add(...res)
   function initInteractiveView(el: HTMLDivElement) {
     const interactiveView = new InteractiveView(el)
     interactiveView.zoom.setAll(0.03)
