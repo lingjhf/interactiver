@@ -42,6 +42,10 @@ export class InteractiveView {
 
   readonly element: SVGGElement
 
+  get position(): Point {
+    return this._draggable.position
+  }
+
   private _renderElement() {
     this.element.setAttribute(
       'transform',
