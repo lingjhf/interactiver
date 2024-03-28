@@ -75,7 +75,7 @@ export class TreeLayout {
     for (const child of children) {
       this._nodeMap.delete(child.id)
       this._edgeMap.delete(child.id)
-      if (child.visibleChildren.length > 0) {
+      if (this._nodeMap.size > 0 && child.visibleChildren.length > 0) {
         this.remove(...child.visibleChildren)
       }
     }

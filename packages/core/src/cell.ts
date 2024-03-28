@@ -1,12 +1,17 @@
 import { Point } from './point'
 import { createUUID } from './utils'
 
+export interface Meta {
+  [key: string]: unknown,
+}
+
 export interface CellOptions {
   id?: string,
   x?: number,
   y?: number,
   width?: number,
   height?: number,
+  meta?: Meta,
 }
 
 export class Cell {
@@ -15,6 +20,7 @@ export class Cell {
     this.position = new Point({ x: options?.x, y: options?.y })
     this._width = options?.width ?? 0
     this._height = options?.height ?? 0
+    this.meta = options?.meta ?? {}
   }
 
   readonly id: string
@@ -24,6 +30,8 @@ export class Cell {
   protected _width: number
 
   protected _height: number
+
+  meta: Meta
 
   get width(): number {
     return this._width
