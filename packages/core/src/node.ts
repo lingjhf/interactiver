@@ -1,11 +1,6 @@
-import { Cell } from './cell'
+import { Cell, CellOptions } from './cell'
 
-export interface NodeOptions<C extends Cell = Cell> {
-  id?: string,
-  x?: number,
-  y?: number,
-  width?: number,
-  height?: number,
+export interface NodeOptions<C extends Cell = Cell> extends CellOptions {
   children?: C[],
 }
 
