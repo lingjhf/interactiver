@@ -1,3 +1,4 @@
+import { TreeLayoutNode } from '@interactiver/core'
 import { InteractiveView, Container, createElement, Tree, createCurve } from '@interactiver/view'
 
 import { generateTree } from './utils'
@@ -24,12 +25,22 @@ function App() {
         return line
       },
     })
-  const res = generateTree(tree.layout, 5)
-  tree.layout.add(...res)
+  // const res = generateTree(tree.layout, 5)
+  const rootNode = new TreeLayoutNode(tree.layout, { id: '123', width: 200, height: 100 })
+  tree.layout.add(rootNode)
   function initInteractiveView(el: HTMLDivElement) {
     const interactiveView = new InteractiveView(el)
     interactiveView.zoom.setAll(0.03)
     interactiveView.element.append(...tree.autoLayout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 }).elements)
+    setTimeout(() => {
+      rootNode.add(
+        new TreeLayoutNode(tree.layout, { width: 200, height: 100 }),
+        new TreeLayoutNode(tree.layout, { width: 200, height: 100 }),
+        new TreeLayoutNode(tree.layout, { width: 200, height: 100 }),
+      )
+      interactiveView.element.innerHTML = ''
+      interactiveView.element.append(...tree.autoLayout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 }).elements)
+    }, 3000)
   }
 
   return (
