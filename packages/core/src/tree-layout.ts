@@ -56,6 +56,9 @@ export class TreeLayout {
    */
   add(...children: TreeLayoutNode[]): this {
     for (const child of children) {
+      if (!child.expand) {
+        continue
+      }
       this._nodeMap.set(child.id, child)
       if (child.parent) {
         this._edgeMap.set(child.id, new Edge(child.parent, child))
