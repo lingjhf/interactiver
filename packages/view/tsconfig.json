@@ -4,8 +4,8 @@
     "lib": ["esnext", "dom"],
     "declaration": true,
     "emitDeclarationOnly": true,
-    "declarationDir": "dist/types"
+    "declarationDir": "dist"
   },
-  "include": ["**/*.ts", "**/*.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
   "exclude": ["**/dist/**"]
 }
