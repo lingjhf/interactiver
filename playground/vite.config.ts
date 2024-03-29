@@ -1,12 +1,12 @@
+import Vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import { defineConfig } from 'vite'
-import Solid from 'vite-plugin-solid'
 
 import { alias } from '../alias'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [UnoCSS(), Solid()],
+  plugins: [UnoCSS(), Vue()],
   resolve: {
     alias,
   },

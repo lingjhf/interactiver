@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "es2018",
     "jsx": "preserve",
-    "jsxImportSource": "solid-js",
     "lib": ["esnext"],
     "module": "esnext",
     "moduleResolution": "Bundler",
@@ -13,7 +12,6 @@
       "@interactiver/keyboard": ["./packages/keyboard/src/index.ts"]
     },
     "resolveJsonModule": true,
-
     "types": ["node", "vite/client"],
     "strict": true,
     "strictNullChecks": true,
