@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_lingjhf_interactiver_1711871096675-push-trigger-input-set
+  identifier: Build_lingjhf_interactiver_1711871096675pushtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: test
+  pipeline:
+    identifier: Build_lingjhf_interactiver_1711871096675
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
