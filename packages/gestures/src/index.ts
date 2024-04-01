@@ -1,1 +1,1 @@
-export * from './gestures'
+export * from './trigger'

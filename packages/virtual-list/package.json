@@ -1,8 +1,7 @@
 {
-  "name": "@interactiver/trigger",
+  "name": "@interactiver/virtual-list",
   "type": "module",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -16,5 +15,7 @@
   "files": [
     "dist"
   ],
-  "scripts": {}
+  "scripts": {
+    "build": "unbuild"
+  }
 }

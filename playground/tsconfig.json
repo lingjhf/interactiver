@@ -3,6 +3,6 @@
   "compilerOptions": {
     "lib": ["esnext", "dom"]
   },
-  "include": ["**/*.ts", "**/*.d.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.d.ts", "**/*.tsx", "**/*.vue"],
   "exclude": ["**/dist/**"]
 }

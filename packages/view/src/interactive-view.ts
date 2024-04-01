@@ -21,10 +21,9 @@ export class InteractiveView {
     element.appendChild(svg)
 
     this._hm = new Hammer(svg)
-    this._draggable = new Draggable()
-    this.zoom = new Zoom()
-    this._draggable.position.on('change', () => this._renderElement())
-    this.zoom.on('change', () => this._renderElement())
+    this._draggable = this._registerDraggable(new Draggable())
+    this.zoom = this._registerZoom(new Zoom())
+
     this._onDrag()
     this._onZoom(svg)
     this._renderElement()
@@ -51,6 +50,16 @@ export class InteractiveView {
       'transform',
     `translate(${this._draggable.position.x},${this._draggable.position.y}) scale(${this.zoom.x},${this.zoom.y})`,
     )
+  }
+
+  private _registerDraggable(draggable: Draggable): Draggable {
+    draggable.position.on('change', () => this._renderElement())
+    return draggable
+  }
+
+  private _registerZoom(zoom: Zoom): Zoom {
+    zoom.on('change', () => this._renderElement())
+    return zoom
   }
 
   private _onDrag() {

@@ -1,4 +1,4 @@
-export interface VirtualScrollItem {
+export interface VirtualItem {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any,
   index: number,
@@ -6,22 +6,22 @@ export interface VirtualScrollItem {
   height: number,
 }
 
-export interface VirtualScrollItemRaw {
+export interface VirtualItemRaw {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any,
   height: number,
 }
 
-export interface VirtualScrollOptions {
+export interface VirtualListOptions {
   viewHeight: number,
-  items?: VirtualScrollItemRaw[],
-  scrollTop?: number,
+  items?: VirtualItemRaw[],
+  offsetTop?: number,
   buffer?: number,
 }
 
-export class VirtualScroll {
-  constructor(options: VirtualScrollOptions) {
-    this.setScrollTop(options.scrollTop ?? 0)
+export class VirtualList {
+  constructor(options: VirtualListOptions) {
+    this.setOffsetTop(options.offsetTop ?? 0)
     this.setViewHeight(options.viewHeight)
     this.setBuffer(options.buffer ?? 0)
     this.setItems(options.items ?? [])
@@ -35,15 +35,15 @@ export class VirtualScroll {
 
   private _scrollDirection = 0
 
-  private _scrollTop = 0
+  private _offsetTop = 0
 
   private _startIndex = -1
 
   private _endIndex = -1
 
-  private _items: VirtualScrollItem[] = []
+  private _items: VirtualItem[] = []
 
-  private _virtualItems: VirtualScrollItem[] = []
+  private _virtualItems: VirtualItem[] = []
 
   get buffer(): number {
     return this._buffer
@@ -57,8 +57,8 @@ export class VirtualScroll {
     return this._totalHeight
   }
 
-  get scrollTop(): number {
-    return this._scrollTop
+  get offsetTop(): number {
+    return this._offsetTop
   }
 
   get startIndex(): number {
@@ -69,30 +69,30 @@ export class VirtualScroll {
     return this._endIndex
   }
 
-  getFirstItem(): VirtualScrollItem | undefined {
+  getFirstItem(): VirtualItem | undefined {
     if (this._items.length > 0) {
       return this._items[0]
     }
     return
   }
 
-  getLastItem(): VirtualScrollItem | undefined {
+  getLastItem(): VirtualItem | undefined {
     if (this._items.length > 0) {
       return this._items[this._items.length - 1]
     }
     return
   }
 
-  get items(): VirtualScrollItem[] {
+  get items(): VirtualItem[] {
     return this._items
   }
 
-  get virtualItems(): VirtualScrollItem[] {
+  get virtualItems(): VirtualItem[] {
     this._resetVirtualItems()
     return this._virtualItems
   }
 
-  setItems(items: VirtualScrollItemRaw[]): this {
+  setItems(items: VirtualItemRaw[]): this {
     this._items = this._generateItems(items)
     const lastItem = this.getLastItem()
     if (lastItem) {
@@ -117,12 +117,12 @@ export class VirtualScroll {
     return this
   }
 
-  setScrollTop(value: number): this {
+  setOffsetTop(value: number): this {
     if (value < 0) {
       return this
     }
-    this._scrollDirection = value - this._scrollTop
-    this._scrollTop = value
+    this._scrollDirection = value - this._offsetTop
+    this._offsetTop = value
     return this
   }
 
@@ -138,7 +138,7 @@ export class VirtualScroll {
     const [boundaryStartIndex, boundaryEndIndex] = getBufferRangeIndex(0, this._items.length - 1, this._startIndex, this._endIndex, this._buffer / 2)
     const boundaryStartItem = this._items[boundaryStartIndex]
     const boundaryEndItem = this._items[boundaryEndIndex]
-    if (this._virtualItems.length === 0 || boundaryStartItem.y > this._scrollTop || boundaryEndItem.y + boundaryEndItem.height < this._scrollTop + this._viewHeight) {
+    if (this._virtualItems.length === 0 || boundaryStartItem.y > this._offsetTop || boundaryEndItem.y + boundaryEndItem.height < this._offsetTop + this._viewHeight) {
       this._startIndex = this._scrollDirection < 0 ? this._findStartIndex(0, this._endIndex) : this._findStartIndex(this._startIndex, this._items.length - 1)
       if (this._startIndex === -1) return
       this._endIndex = this._findEndIndex(this._startIndex)
@@ -148,14 +148,14 @@ export class VirtualScroll {
     }
   }
 
-  private _generateItems(items: VirtualScrollItemRaw[]): VirtualScrollItem[] {
+  private _generateItems(items: VirtualItemRaw[]): VirtualItem[] {
     let totalHeight = 0
-    const vItems: VirtualScrollItem[] = []
+    const vItems: VirtualItem[] = []
     for (let i = 0; i < items.length; i++) {
       const item = items[i]
       item['index'] = i
       item['y'] = totalHeight
-      vItems.push(item as VirtualScrollItem)
+      vItems.push(item as VirtualItem)
       totalHeight += item.height
     }
     return vItems
@@ -167,19 +167,19 @@ export class VirtualScroll {
     }
     const middleIndex = Math.floor((startIndex + endIndex) / 2)
     const middleItem = this._items[middleIndex]
-    const viewSum = this._scrollTop + this._viewHeight
+    const viewSum = this._offsetTop + this._viewHeight
     const middleItemSum = middleItem.y + middleItem.height
     if (
       viewSum < middleItem.y
-      || (middleItem.y > this._scrollTop && viewSum >= middleItemSum)
-      || (middleItem.y > this._scrollTop && middleItemSum > viewSum)
+      || (middleItem.y > this._offsetTop && viewSum >= middleItemSum)
+      || (middleItem.y > this._offsetTop && middleItemSum > viewSum)
     ) {
       return this._findStartIndex(startIndex, middleIndex - 1)
     }
-    if (this._scrollTop >= middleItemSum) {
+    if (this._offsetTop >= middleItemSum) {
       return this._findStartIndex(middleIndex + 1, endIndex)
     }
-    if (middleItem.y <= this._scrollTop && middleItemSum > this.scrollTop) {
+    if (middleItem.y <= this._offsetTop && middleItemSum > this.offsetTop) {
       return middleIndex
     }
     return -1
@@ -188,7 +188,7 @@ export class VirtualScroll {
   private _findEndIndex(startIndex: number): number {
     for (let i = startIndex; i < this._items.length; i++) {
       const item = this._items[i]
-      if (item.y + item.height >= this._scrollTop + this._viewHeight) {
+      if (item.y + item.height >= this._offsetTop + this._viewHeight) {
         return item.index
       }
     }

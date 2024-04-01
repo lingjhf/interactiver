@@ -1,1 +1,1 @@
-# @interactiver/gestures
+# @interactiver/trigger
