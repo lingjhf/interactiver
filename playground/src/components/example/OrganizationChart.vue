@@ -1,18 +1,30 @@
 <template>
-  <div :ref='initInteractiveView' />
+  <div
+    ref='interactive'
+    class='w-full h-full'
+  >
+    <div ref='interactiveView' />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { InteractiveView } from '@interactiver/view'
-import { ComponentPublicInstance } from 'vue'
+import { InteractiveView, Interactive } from '@interactiver/view'
 
 let interactiveView: InteractiveView
 
-function initInteractiveView(el: Element | ComponentPublicInstance | null) {
-  interactiveView = new InteractiveView(el as HTMLElement)
-}
+const interactiveRef = shallowRef<HTMLDivElement>()
+const interactiveViewRef = shallowRef<HTMLDivElement>()
+
+onMounted(() => {
+  if (interactiveRef.value && interactiveViewRef.value) {
+    console.log('sdf')
+    interactiveView = new InteractiveView(interactiveRef.value, new Interactive(interactiveViewRef.value))
+  }
+})
 
 </script>
+
+<style scoped></style>
 
 <!--
 import { TreeLayoutNode } from '@interactiver/core'

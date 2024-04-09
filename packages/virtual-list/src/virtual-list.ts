@@ -1,4 +1,4 @@
-export interface VirtualItem {
+export interface VirtualListItem {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any,
   index: number,
@@ -6,25 +6,25 @@ export interface VirtualItem {
   height: number,
 }
 
-export interface VirtualItemRaw {
+export interface VirtualListItemRaw {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any,
   height: number,
 }
 
 export interface VirtualListOptions {
+  items: VirtualListItemRaw[],
   viewHeight: number,
-  items?: VirtualItemRaw[],
-  offsetTop?: number,
+  scrollTop?: number,
   buffer?: number,
 }
 
 export class VirtualList {
   constructor(options: VirtualListOptions) {
-    this.setOffsetTop(options.offsetTop ?? 0)
+    this.setScrollTop(options.scrollTop ?? 0)
     this.setViewHeight(options.viewHeight)
     this.setBuffer(options.buffer ?? 0)
-    this.setItems(options.items ?? [])
+    this.setItems(options.items)
   }
 
   private _buffer = 10
@@ -35,15 +35,15 @@ export class VirtualList {
 
   private _scrollDirection = 0
 
-  private _offsetTop = 0
+  private _scrollTop = 0
 
   private _startIndex = -1
 
   private _endIndex = -1
 
-  private _items: VirtualItem[] = []
+  private _items: VirtualListItem[] = []
 
-  private _virtualItems: VirtualItem[] = []
+  private _virtualItems: VirtualListItem[] = []
 
   get buffer(): number {
     return this._buffer
@@ -57,8 +57,8 @@ export class VirtualList {
     return this._totalHeight
   }
 
-  get offsetTop(): number {
-    return this._offsetTop
+  get scrollTop(): number {
+    return this._scrollTop
   }
 
   get startIndex(): number {
@@ -69,35 +69,38 @@ export class VirtualList {
     return this._endIndex
   }
 
-  getFirstItem(): VirtualItem | undefined {
+  getFirstItem(): VirtualListItem | undefined {
     if (this._items.length > 0) {
       return this._items[0]
     }
     return
   }
 
-  getLastItem(): VirtualItem | undefined {
+  getLastItem(): VirtualListItem | undefined {
     if (this._items.length > 0) {
       return this._items[this._items.length - 1]
     }
     return
   }
 
-  get items(): VirtualItem[] {
+  get items(): VirtualListItem[] {
     return this._items
   }
 
-  get virtualItems(): VirtualItem[] {
+  get virtualItems(): VirtualListItem[] {
     this._resetVirtualItems()
     return this._virtualItems
   }
 
-  setItems(items: VirtualItemRaw[]): this {
+  setItems(items: VirtualListItemRaw[]): this {
     this._items = this._generateItems(items)
     const lastItem = this.getLastItem()
     if (lastItem) {
       this._totalHeight = lastItem.y + lastItem.height
     }
+    this._startIndex = this._findStartIndex(0, this._items.length - 1)
+    if (this._startIndex === -1) return this
+    this._endIndex = this._findEndIndex(this._startIndex)
     return this
   }
 
@@ -117,12 +120,12 @@ export class VirtualList {
     return this
   }
 
-  setOffsetTop(value: number): this {
+  setScrollTop(value: number): this {
     if (value < 0) {
       return this
     }
-    this._scrollDirection = value - this._offsetTop
-    this._offsetTop = value
+    this._scrollDirection = value - this._scrollTop
+    this._scrollTop = value
     return this
   }
 
@@ -135,10 +138,11 @@ export class VirtualList {
       this._endIndex = this._findEndIndex(this._startIndex)
       if (this._endIndex === -1) return
     }
+
     const [boundaryStartIndex, boundaryEndIndex] = getBufferRangeIndex(0, this._items.length - 1, this._startIndex, this._endIndex, this._buffer / 2)
     const boundaryStartItem = this._items[boundaryStartIndex]
     const boundaryEndItem = this._items[boundaryEndIndex]
-    if (this._virtualItems.length === 0 || boundaryStartItem.y > this._offsetTop || boundaryEndItem.y + boundaryEndItem.height < this._offsetTop + this._viewHeight) {
+    if (this._virtualItems.length === 0 || boundaryStartItem.y > this._scrollTop || boundaryEndItem.y + boundaryEndItem.height < this._scrollTop + this._viewHeight) {
       this._startIndex = this._scrollDirection < 0 ? this._findStartIndex(0, this._endIndex) : this._findStartIndex(this._startIndex, this._items.length - 1)
       if (this._startIndex === -1) return
       this._endIndex = this._findEndIndex(this._startIndex)
@@ -148,14 +152,14 @@ export class VirtualList {
     }
   }
 
-  private _generateItems(items: VirtualItemRaw[]): VirtualItem[] {
+  private _generateItems(items: VirtualListItemRaw[]): VirtualListItem[] {
     let totalHeight = 0
-    const vItems: VirtualItem[] = []
+    const vItems: VirtualListItem[] = []
     for (let i = 0; i < items.length; i++) {
       const item = items[i]
       item['index'] = i
       item['y'] = totalHeight
-      vItems.push(item as VirtualItem)
+      vItems.push(item as VirtualListItem)
       totalHeight += item.height
     }
     return vItems
@@ -167,19 +171,19 @@ export class VirtualList {
     }
     const middleIndex = Math.floor((startIndex + endIndex) / 2)
     const middleItem = this._items[middleIndex]
-    const viewSum = this._offsetTop + this._viewHeight
+    const viewSum = this._scrollTop + this._viewHeight
     const middleItemSum = middleItem.y + middleItem.height
     if (
       viewSum < middleItem.y
-      || (middleItem.y > this._offsetTop && viewSum >= middleItemSum)
-      || (middleItem.y > this._offsetTop && middleItemSum > viewSum)
+      || (middleItem.y > this._scrollTop && viewSum >= middleItemSum)
+      || (middleItem.y > this._scrollTop && middleItemSum > viewSum)
     ) {
       return this._findStartIndex(startIndex, middleIndex - 1)
     }
-    if (this._offsetTop >= middleItemSum) {
+    if (this._scrollTop >= middleItemSum) {
       return this._findStartIndex(middleIndex + 1, endIndex)
     }
-    if (middleItem.y <= this._offsetTop && middleItemSum > this.offsetTop) {
+    if (middleItem.y <= this._scrollTop && middleItemSum > this.scrollTop) {
       return middleIndex
     }
     return -1
@@ -188,8 +192,11 @@ export class VirtualList {
   private _findEndIndex(startIndex: number): number {
     for (let i = startIndex; i < this._items.length; i++) {
       const item = this._items[i]
-      if (item.y + item.height >= this._offsetTop + this._viewHeight) {
+      if (item.y + item.height >= this._scrollTop + this._viewHeight) {
         return item.index
+      }
+      else if (i === this._items.length - 1) {
+        return this._items.length - 1
       }
     }
     return -1

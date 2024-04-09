@@ -1,21 +1,27 @@
 import { Node, NodeOptions } from '@interactiver/core'
 
-import { createElement } from './element'
+import { Interactive } from './interactive'
 
-export interface ContainerOptions extends NodeOptions<Container> {
-  onDrag?: () => void,
-}
+export type ContainerOptions = NodeOptions<Container>
 export class Container extends Node<Container> {
-  constructor(options?: ContainerOptions) {
+  constructor(interactive: Interactive, options?: ContainerOptions) {
     super(options)
-    this.element = createElement('g')
-    this._render()
+    this._interactive = interactive
+    this._interactive.on('drag', () => this.render())
+    this._interactive.on('zoom', () => this.render())
+    this.position.set(this._interactive.position)
   }
 
-  readonly element: SVGGElement
+  protected _interactive: Interactive
 
-  private _render(): this {
-    this.element.setAttribute('transform', `translate(${this.x},${this.y})`)
-    return this
+  render() {
+    this.position.set(this._interactive.position)
+    this._interactive.element.setAttribute(
+      'transform',
+    `
+    translate(${this._interactive.position.x},${this._interactive.position.y}) 
+    scale(${this._interactive.zoom.x},${this._interactive.zoom.y})
+    `,
+    )
   }
 }
