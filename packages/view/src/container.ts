@@ -4,17 +4,19 @@ import { Interactive } from './interactive'
 
 export type ContainerOptions = NodeOptions<Container>
 export class Container extends Node<Container> {
-  constructor(interactive: Interactive, options?: ContainerOptions) {
+  constructor(element: HTMLElement | SVGElement, options?: ContainerOptions) {
     super(options)
-    this._interactive = interactive
+    this.element = element
+    this._interactive = new Interactive(element)
     this._interactive.on('drag', () => this.render())
     this._interactive.on('zoom', () => this.render())
-    this.position.set(this._interactive.position)
   }
+
+  readonly element: HTMLElement | SVGElement
 
   protected _interactive: Interactive
 
-  render() {
+  render(): this {
     this.position.set(this._interactive.position)
     this._interactive.element.setAttribute(
       'transform',
@@ -23,5 +25,6 @@ export class Container extends Node<Container> {
     scale(${this._interactive.zoom.x},${this._interactive.zoom.y})
     `,
     )
+    return this
   }
 }

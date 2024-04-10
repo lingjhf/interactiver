@@ -8,9 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@interactiver/core':
+        specifier: workspace:*
+        version: link:packages/core
+      '@interactiver/scrollbar':
+        specifier: workspace:*
+        version: link:packages/scrollbar
       '@interactiver/view':
         specifier: workspace:*
         version: link:packages/view
+      '@interactiver/virtual-list':
+        specifier: workspace:*
+        version: link:packages/virtual-list
       '@unocss/reset':
         specifier: ^0.58.8
         version: 0.58.8
@@ -38,6 +47,9 @@ importers:
       vue:
         specifier: ^3.4.21
         version: 3.4.21(typescript@5.4.2)
+      vue-router:
+        specifier: '4'
+        version: 4.3.0(vue@3.4.21)
     devDependencies:
       '@papaya-app/eslint-config':
         specifier: ^0.3.2
@@ -110,6 +122,8 @@ importers:
 
   packages/keyboard: {}
 
+  packages/scrollbar: {}
+
   packages/view:
     dependencies:
       '@interactiver/core':
@@ -118,6 +132,8 @@ importers:
       hammerjs:
         specifier: ^2.0.8
         version: 2.0.8
+
+  packages/virtual-list: {}
 
   playground: {}
 
@@ -2265,6 +2281,10 @@ packages:
     dependencies:
       '@vue/compiler-dom': 3.4.21
       '@vue/shared': 3.4.21
+
+  /@vue/devtools-api@6.6.1:
+    resolution: {integrity: sha512-LgPscpE3Vs0x96PzSSB4IGVSZXZBZHpfxs+ZA1d+VEPwHdOXowy/Y2CsvCAIFrf+ssVU1pD1jidj505EpUnfbA==}
+    dev: false
 
   /@vue/devtools-api@7.0.19(vue@3.4.21):
     resolution: {integrity: sha512-RlNAMDLEFPi44I79t3OAWStjED0PS4havAYevkgHRPqZxgX+cNvQqTqgl6DVJBsmkuOcnWev4ukQaCuuWrNgzw==}
@@ -6166,6 +6186,15 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /vue-router@4.3.0(vue@3.4.21):
+    resolution: {integrity: sha512-dqUcs8tUeG+ssgWhcPbjHvazML16Oga5w34uCUmsk7i0BcnskoLGwjpa15fqMr2Fa5JgVBrdL2MEgqz6XZ/6IQ==}
+    peerDependencies:
+      vue: ^3.2.0
+    dependencies:
+      '@vue/devtools-api': 6.6.1
+      vue: 3.4.21(typescript@5.4.2)
+    dev: false
 
   /vue@3.4.21(typescript@5.4.2):
     resolution: {integrity: sha512-5hjyV/jLEIKD/jYl4cavMcnzKwjMKohureP8ejn3hhEjwhWIhWeuzL2kJAjzl/WyVsgPY56Sy4Z40C3lVshxXA==}

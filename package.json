@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@interactiver/core": "workspace:*",
+    "@interactiver/scrollbar": "workspace:*",
     "@interactiver/view": "workspace:*",
     "@interactiver/virtual-list": "workspace:*",
-    "@interactiver/scrollbar": "workspace:*",
     "@unocss/reset": "^0.58.8",
     "d3": "^7.8.5",
     "dagre": "^0.8.5",
@@ -23,7 +23,8 @@
     "mitt": "^3.0.1",
     "primevue": "^3.50.0",
     "uuid": "^9.0.1",
-    "vue": "^3.4.21"
+    "vue": "^3.4.21",
+    "vue-router": "4"
   },
   "devDependencies": {
     "@papaya-app/eslint-config": "^0.3.2",
