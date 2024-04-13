@@ -1,8 +1,6 @@
 import * as d3 from 'd3'
 
-import { Cell } from './cell'
-import { Edge } from './edge'
-import { Point } from './point'
+import { Cell, Edge, Point } from './base'
 
 /**
  * 通过4个点生成贝塞尔曲线

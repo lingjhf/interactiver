@@ -1,5 +1,4 @@
-import { Node } from './node'
-import { Point } from './point'
+import { Node, Point } from './base'
 
 export class Brush extends Node {
   // 原点位置

@@ -1,26 +1,21 @@
 import { Cell, CellOptions } from './cell'
 
-export interface NodeOptions<C extends Cell = Cell> extends CellOptions {
-  children?: C[],
-}
+export type NodeOptions = CellOptions
 
-type _Node = Node
-
-export class Node<C extends _Node = _Node> extends Cell {
-  constructor(options?: NodeOptions<C>) {
+export class Node extends Cell {
+  constructor(options?: NodeOptions) {
     super(options)
-    this._addChildren(...(options?.children ?? []))
   }
 
-  protected _parent?: C
+  protected _parent?: Node
 
-  protected _children: Map<string, C> = new Map()
+  protected _children: Map<string, Node> = new Map()
 
-  get parent(): C | undefined {
+  get parent(): Node | undefined {
     return this._parent
   }
 
-  get children(): C[] {
+  get children(): Node[] {
     return [...this._children.values()]
   }
 
@@ -30,9 +25,9 @@ export class Node<C extends _Node = _Node> extends Cell {
    * @param value
    * @returns
    */
-  setParent(value?: C | this): this {
+  setParent(value?: Node): this {
     if (value !== this) {
-      this._parent = value as C
+      this._parent = value
     }
     return this
   }
@@ -43,7 +38,7 @@ export class Node<C extends _Node = _Node> extends Cell {
    * @param children
    * @returns
    */
-  add(...children: C[]): this {
+  add(...children: Node[]): this {
     this._addChildren(...children)
     return this
   }
@@ -54,7 +49,7 @@ export class Node<C extends _Node = _Node> extends Cell {
    * @param children
    * @returns
    */
-  remove(...children: C[]): this {
+  remove(...children: Node[]): this {
     for (const child of children) {
       this._children.delete(child.id)
     }
@@ -71,7 +66,7 @@ export class Node<C extends _Node = _Node> extends Cell {
     return this
   }
 
-  private _addChildren(...children: C[]): this {
+  private _addChildren(...children: Node[]): this {
     for (const child of children) {
       child.setParent(this)
       this._children.set(child.id, child)

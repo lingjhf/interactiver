@@ -1,8 +1,8 @@
 import { TreeLayout, TreeLayoutNode, Edge, TreeGraphLabel } from '@interactiver/core'
 
 export interface TreeOptions {
-  renderNode?: (node: TreeLayoutNode) => SVGGraphicsElement,
-  renderEdge?: (edge: Edge<TreeLayoutNode>) => SVGGraphicsElement,
+  renderNode?: (node: TreeLayoutNode) => HTMLElement | SVGElement,
+  renderEdge?: (edge: Edge<TreeLayoutNode>) => HTMLElement | SVGElement,
 }
 
 export class Tree {
@@ -18,7 +18,7 @@ export class Tree {
 
   private _renderEdge?: (node: Edge<TreeLayoutNode>) => void
 
-  elements: SVGGraphicsElement[] = []
+  elements: (HTMLElement | SVGElement)[] = []
 
   autoLayout(options: TreeGraphLabel): this {
     this.layout.layout(options)

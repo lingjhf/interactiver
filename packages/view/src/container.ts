@@ -1,30 +1,82 @@
-import { Node, NodeOptions } from '@interactiver/core'
+import { Draggable, Node, NodeOptions, Point, Zoom } from '@interactiver/core'
+import Hammer from 'hammerjs'
 
-import { Interactive } from './interactive'
-
-export type ContainerOptions = NodeOptions<Container>
-export class Container extends Node<Container> {
+export interface ContainerOptions extends NodeOptions {
+  draggable?: boolean,
+  wheelZoom?: boolean,
+}
+export class Container extends Node {
   constructor(element: HTMLElement | SVGElement, options?: ContainerOptions) {
     super(options)
     this.element = element
-    this._interactive = new Interactive(element)
-    this._interactive.on('drag', () => this.render())
-    this._interactive.on('zoom', () => this.render())
+    this._hm = new Hammer(element)
+    this._draggable = new Draggable({ position: this.position })
+    this.setDraggable(options?.draggable ?? false)
+    this.setWheelZoom(options?.wheelZoom ?? false)
   }
 
   readonly element: HTMLElement | SVGElement
 
-  protected _interactive: Interactive
+  private _hm: HammerManager
+
+  private _draggable: Draggable
+
+  setDraggable(value: boolean): this {
+    const dragStart = (event: HammerInput) => this._dragStart(event)
+    const dragMove = (event: HammerInput) => this._dragMove(event)
+    if (value) {
+      this._hm.on('panstart', dragStart)
+      this._hm.on('panmove', dragMove)
+    }
+    else {
+      this._hm.off('panstart', dragStart)
+      this._hm.off('panmove', dragMove)
+    }
+    return this
+  }
+
+  setWheelZoom(value: boolean): this {
+    const wheelZoom = (event: Event) => this._wheelZoom(event as WheelEvent)
+    if (value) {
+      this.element.addEventListener('wheel', wheelZoom)
+    }
+    else {
+      this.element.removeEventListener('wheel', wheelZoom)
+    }
+    return this
+  }
 
   render(): this {
-    this.position.set(this._interactive.position)
-    this._interactive.element.setAttribute(
-      'transform',
+    this.element.style.transform = `
+    translate(${this.position.x}px,${this.position.y}px) 
+    scale(${this.zoom.x},${this.zoom.y})
     `
-    translate(${this._interactive.position.x},${this._interactive.position.y}) 
-    scale(${this._interactive.zoom.x},${this._interactive.zoom.y})
-    `,
-    )
     return this
+  }
+
+  private _dragStart(event: HammerInput) {
+    this._draggable.start(new Point({ x: event.center.x, y: event.center.y }))
+    this.emit('dragStart')
+  }
+
+  private _dragMove(event: HammerInput) {
+    this._draggable.move(new Point({ x: event.center.x, y: event.center.y }))
+    this.emit('drag')
+  }
+
+  private _wheelZoom(event: WheelEvent) {
+    event.preventDefault()
+    const area = this.element.getBoundingClientRect()
+    const source = new Zoom(this.zoom)
+    if (event.deltaY > 0) {
+      this.zoom.out(1.1)
+    }
+    else {
+      this.zoom.in(1.1)
+    }
+    this.position.set(
+      Zoom.focusZoom(source, this.zoom, this.position, new Point({ x: event.x - area.x, y: event.y - area.y })),
+    )
+    this.emit('zoom')
   }
 }

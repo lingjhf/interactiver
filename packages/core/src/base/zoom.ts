@@ -1,4 +1,5 @@
-import { Mitt } from './events'
+import { EventEmitter } from 'eventemitter3'
+
 import { Point } from './point'
 
 export interface ZoomOptions {
@@ -8,7 +9,7 @@ export interface ZoomOptions {
   min?: number,
 }
 
-export class Zoom extends Mitt<{ change: void, }> {
+export class Zoom extends EventEmitter {
   constructor(options?: ZoomOptions) {
     super()
     this._x = options?.x ?? 1
@@ -65,13 +66,13 @@ export class Zoom extends Mitt<{ change: void, }> {
   out(value: number): this {
     return this.set({ x: this._x / value, y: this._y / value })
   }
-}
 
-export function focusZoom(source: Zoom, target: Zoom, position: Point, focus: Point): Point {
-  const zoomX = target.x / source.x
-  const zoomY = target.y / source.y
-  return new Point({
-    x: focus.x - zoomX * (focus.x - position.x),
-    y: focus.y - zoomY * (focus.y - position.y),
-  })
+  static focusZoom(source: Zoom, target: Zoom, position: Point, focus: Point): Point {
+    const zoomX = target.x / source.x
+    const zoomY = target.y / source.y
+    return new Point({
+      x: focus.x - zoomX * (focus.x - position.x),
+      y: focus.y - zoomY * (focus.y - position.y),
+    })
+  }
 }

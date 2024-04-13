@@ -1,7 +1,6 @@
 import dagre from 'dagre'
 
-import { Edge } from './edge'
-import { NodeOptions, Node } from './node'
+import { NodeOptions, Node, Edge } from './base'
 
 export type TreeGraphLabel = dagre.GraphLabel
 
@@ -94,13 +93,13 @@ export class TreeLayout {
   }
 }
 
-export interface TreeLayoutNodeOptions extends NodeOptions<TreeLayoutNode> {
+export interface TreeLayoutNodeOptions extends NodeOptions {
   offset?: number,
   limit?: number,
   expand?: boolean,
 }
 
-export class TreeLayoutNode extends Node<TreeLayoutNode> {
+export class TreeLayoutNode extends Node {
   constructor(layout: TreeLayout, options?: TreeLayoutNodeOptions) {
     super(options)
     this._layout = layout
@@ -119,6 +118,14 @@ export class TreeLayoutNode extends Node<TreeLayoutNode> {
   private _expand = true
 
   private _visibleChildren: TreeLayoutNode[] = []
+
+  get parent(): TreeLayoutNode | undefined {
+    return this._parent as TreeLayoutNode
+  }
+
+  get children(): TreeLayoutNode[] {
+    return [...this._children.values()] as TreeLayoutNode[]
+  }
 
   get limit(): number {
     return this._limit

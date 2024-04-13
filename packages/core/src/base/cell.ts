@@ -1,5 +1,8 @@
+import { EventEmitter } from 'eventemitter3'
+import { v4 as uuidv4 } from 'uuid'
+
 import { Point } from './point'
-import { createUUID } from './utils'
+import { Zoom, ZoomOptions } from './zoom'
 
 export interface Meta {
   [key: string]: unknown,
@@ -11,13 +14,16 @@ export interface CellOptions {
   y?: number,
   width?: number,
   height?: number,
+  zoom?: ZoomOptions,
   meta?: Meta,
 }
 
-export class Cell {
+export class Cell extends EventEmitter {
   constructor(options?: CellOptions) {
-    this.id = options?.id ?? createUUID()
+    super()
+    this.id = options?.id ?? uuidv4()
     this.position = new Point({ x: options?.x, y: options?.y })
+    this.zoom = new Zoom(options?.zoom)
     this._width = options?.width ?? 0
     this._height = options?.height ?? 0
     this.meta = options?.meta ?? {}
@@ -26,6 +32,8 @@ export class Cell {
   readonly id: string
 
   readonly position: Point
+
+  readonly zoom: Zoom
 
   protected _width: number
 

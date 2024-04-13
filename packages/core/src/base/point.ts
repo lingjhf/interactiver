@@ -1,11 +1,11 @@
-import { Mitt } from './events'
+import { EventEmitter } from 'eventemitter3'
 
 export interface PointOptions {
   x?: number,
   y?: number,
 }
 
-export class Point extends Mitt<{ change: void, }> {
+export class Point extends EventEmitter<{ change: void, }> {
   constructor(options?: PointOptions) {
     super()
     this._x = options?.x ?? 0

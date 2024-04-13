@@ -19,7 +19,7 @@
     "build": "unbuild"
   },
   "dependencies": {
-    "hammerjs": "^2.0.8",
-    "@interactiver/core": "workspace:*"
+    "@interactiver/core": "workspace:*",
+    "hammerjs": "^2.0.8"
   }
 }

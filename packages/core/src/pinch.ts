@@ -1,5 +1,4 @@
-import { Point } from './point'
-import { Zoom } from './zoom'
+import { Zoom, Point } from './base'
 
 export interface PinchOptions {
   zoom?: Zoom,
