@@ -1,31 +1,42 @@
 <template>
   <div
     ref='interactiveRef'
-    class='w-full h-full bg-green-400 '
+    class='w-full h-full '
   >
     <div
       ref='canvasRef'
-      class='w-300px h-300px bg-blue-500 origin-top-left'
-    >
-      <div class='w-10px h-10px bg-black absolute left-10 top-10' />
-    </div>
+      class='w-300px h-300px bg-blue-500 origin-top-left relative'
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { TreeLayoutNode } from '@interactiver/core'
-import { InteractiveView, Interactive, Tree } from '@interactiver/view'
+import { Container } from '@interactiver/view'
 
-let interactiveView: InteractiveView
+let interactive: Container
+let content: Container
 
 const interactiveRef = shallowRef<HTMLDivElement>()
 const canvasRef = shallowRef<HTMLDivElement>()
 
 onMounted(() => {
   if (interactiveRef.value && canvasRef.value) {
-    interactiveView = new InteractiveView(canvasRef.value, new Interactive(interactiveRef.value)).render()
+    interactive = new Container(interactiveRef.value, { draggable: true, wheelZoom: true })
+    content = new Container(canvasRef.value)
+    interactive.on('drag', () => {
+      renderCanvas()
+    })
+    interactive.on('zoom', () => {
+      renderCanvas()
+    })
   }
 })
+
+function renderCanvas() {
+  content.position.set(interactive.position)
+  content.zoom.set(interactive.zoom)
+  content.render()
+}
 
 </script>
 

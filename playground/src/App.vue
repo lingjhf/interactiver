@@ -1,13 +1,15 @@
 <template>
   <layout class='h-screen'>
+    <template #sidebar>
+      <Sidebar />
+    </template>
     <template #main>
-      <InteractiveView />
+      <router-view />
     </template>
   </layout>
 </template>
 
 <script setup lang="ts">
-import Layout from './components/Layout.vue'
 
 </script>
 
