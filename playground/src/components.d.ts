@@ -17,5 +17,8 @@ declare module 'vue' {
     Sidebar: typeof import('./components/Sidebar.vue')['default']
     Splitter: typeof import('primevue/splitter')['default']
     SplitterPanel: typeof import('primevue/splitterpanel')['default']
+    VBtn: typeof import('vuetify/components')['VBtn']
+    VItems: typeof import('vuetify/components')['VItems']
+    VList: typeof import('vuetify/components')['VList']
   }
 }

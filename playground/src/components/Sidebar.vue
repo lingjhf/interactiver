@@ -1,25 +1,40 @@
 <template>
-  <Menu
-    id='a'
-    class='border-none'
-    :index='1'
-    :model='menusItems'
+  <v-list
+    :items='menusItems'
+    :selected='currentMenu'
+    @update:selected='selectedMenu'
   />
 </template>
 
 <script setup lang="ts">
-import { MenuItem } from 'primevue/menuitem'
 import { RouteRecordRaw } from 'vue-router'
 
 import { routes } from '../router'
 
 const router = useRouter()
+const route = useRoute()
+const currentMenu = ref<string[]>([])
 const menusItems = ref(routesToMenus(routes))
 
-const currentItem = ref<MenuItem>(menusItems.value[0])
-function routesToMenus(routes: RouteRecordRaw[]): MenuItem[] {
-  return routes.map(route => ({ label: route.name?.toString() ?? '', command: (event) => {
-    router.push(route)
-  } }))
+watch(route, () => {
+  const name = route.name?.toString()
+  if (name) {
+    currentMenu.value = [name]
+  }
+})
+
+function routesToMenus(routes: RouteRecordRaw[]) {
+  return routes.map((item) => {
+    return {
+      title: item.name,
+      value: item.name,
+    }
+  })
+}
+
+function selectedMenu(menus: string[]) {
+  if (menus.length > 0) {
+    router.push({ name: menus[0] })
+  }
 }
 </script>

@@ -38,9 +38,6 @@ importers:
       hotkeys-js:
         specifier: ^3.13.7
         version: 3.13.7
-      primevue:
-        specifier: ^3.50.0
-        version: 3.50.0(vue@3.4.21)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -50,6 +47,9 @@ importers:
       vue-router:
         specifier: '4'
         version: 4.3.0(vue@3.4.21)
+      vuetify:
+        specifier: ^3.5.15
+        version: 3.5.15(typescript@5.4.2)(vue@3.4.21)
     devDependencies:
       '@papaya-app/eslint-config':
         specifier: ^0.3.2
@@ -5207,14 +5207,6 @@ packages:
       react-is: 18.2.0
     dev: true
 
-  /primevue@3.50.0(vue@3.4.21):
-    resolution: {integrity: sha512-vYpQzvIXSmF0hWUkviHEGnwbFY/G8jI2RSxoa75noJloI2rWhzOX+JarJ8iaesVOr7b2se31N/p7zOx6uh3ddQ==}
-    peerDependencies:
-      vue: ^3.0.0
-    dependencies:
-      vue: 3.4.21(typescript@5.4.2)
-    dev: false
-
   /punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
@@ -6212,6 +6204,29 @@ packages:
       '@vue/server-renderer': 3.4.21(vue@3.4.21)
       '@vue/shared': 3.4.21
       typescript: 5.4.2
+
+  /vuetify@3.5.15(typescript@5.4.2)(vue@3.4.21):
+    resolution: {integrity: sha512-4v+t3yjgZ5M4+YKRK2eOxymWU34/Sg8YP6Dqi4ZMYFjchiwijOns1WW4ywYlYXih0TSPVeAeQpCzztDu89nTyg==}
+    engines: {node: ^12.20 || >=14.13}
+    peerDependencies:
+      typescript: '>=4.7'
+      vite-plugin-vuetify: '>=1.0.0'
+      vue: ^3.3.0
+      vue-i18n: ^9.0.0
+      webpack-plugin-vuetify: '>=2.0.0'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      vite-plugin-vuetify:
+        optional: true
+      vue-i18n:
+        optional: true
+      webpack-plugin-vuetify:
+        optional: true
+    dependencies:
+      typescript: 5.4.2
+      vue: 3.4.21(typescript@5.4.2)
+    dev: false
 
   /webpack-sources@3.2.3:
     resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}

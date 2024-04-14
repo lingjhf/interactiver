@@ -1,7 +1,7 @@
 import Vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
-import { PrimeVueResolver } from 'unplugin-vue-components/resolvers'
+import { Vuetify3Resolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 
@@ -17,7 +17,7 @@ export default defineConfig({
         'src/components',
       ],
       resolvers: [
-        PrimeVueResolver(),
+        Vuetify3Resolver(),
       ],
       dts: 'src/components.d.ts',
     }),
