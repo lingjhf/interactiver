@@ -12,11 +12,14 @@ export interface VirtualListItemRaw {
   height: number,
 }
 
+export type VirtualListChange = (items: VirtualListItem[]) => void
+
 export interface VirtualListOptions {
   items: VirtualListItemRaw[],
   viewHeight: number,
   scrollTop?: number,
   buffer?: number,
+  change?: VirtualListChange,
 }
 
 export class VirtualList {
@@ -25,6 +28,7 @@ export class VirtualList {
     this.setViewHeight(options.viewHeight)
     this.setBuffer(options.buffer ?? 0)
     this.setItems(options.items)
+    this._change = options?.change
   }
 
   private _buffer = 10
@@ -44,6 +48,8 @@ export class VirtualList {
   private _items: VirtualListItem[] = []
 
   private _virtualItems: VirtualListItem[] = []
+
+  private _change?: VirtualListChange
 
   get buffer(): number {
     return this._buffer
@@ -88,19 +94,31 @@ export class VirtualList {
   }
 
   get virtualItems(): VirtualListItem[] {
-    this._resetVirtualItems()
     return this._virtualItems
   }
 
+  remove(...items: VirtualListItem[]): this {
+    return this
+  }
+
+  add(...items: VirtualListItem[]): this {
+    return this
+  }
+
+  insert(...items: VirtualListItem[]): this {
+    return this
+  }
+
   setItems(items: VirtualListItemRaw[]): this {
+    this._scrollTop = 0
+    this._startIndex = -1
+    this._endIndex = -1
+    this._virtualItems = []
     this._items = this._generateItems(items)
     const lastItem = this.getLastItem()
     if (lastItem) {
       this._totalHeight = lastItem.y + lastItem.height
     }
-    this._startIndex = this._findStartIndex(0, this._items.length - 1)
-    if (this._startIndex === -1) return this
-    this._endIndex = this._findEndIndex(this._startIndex)
     return this
   }
 
@@ -129,6 +147,29 @@ export class VirtualList {
     return this
   }
 
+  exec(): this {
+    this._emitChange()
+    return this
+  }
+
+  private _emitChange() {
+    const source = this._virtualItems
+    this._resetVirtualItems()
+    const target = this._virtualItems
+    if (source.length === 0 && target.length === 0) {
+      return
+    }
+    if (
+      target.length > 0
+      && source.length === target.length
+      && source[0].y === target[0].y
+      && source[source.length - 1].y === target[target.length - 1].y
+    ) {
+      return
+    }
+    this._change?.(target)
+  }
+
   private _resetVirtualItems() {
     if (this._startIndex === -1) {
       this._startIndex = this._findStartIndex(0, this._items.length - 1)
@@ -142,7 +183,14 @@ export class VirtualList {
     const [boundaryStartIndex, boundaryEndIndex] = getBufferRangeIndex(0, this._items.length - 1, this._startIndex, this._endIndex, this._buffer / 2)
     const boundaryStartItem = this._items[boundaryStartIndex]
     const boundaryEndItem = this._items[boundaryEndIndex]
-    if (this._virtualItems.length === 0 || boundaryStartItem.y > this._scrollTop || boundaryEndItem.y + boundaryEndItem.height < this._scrollTop + this._viewHeight) {
+    const virtualItemLast = this._virtualItems[this._virtualItems.length - 1]
+    // 判断是否生成新的virtualItems
+    if (
+      this._virtualItems.length === 0
+      || boundaryStartItem.y > this._scrollTop
+      || boundaryEndItem.y + boundaryEndItem.height < this._scrollTop + this._viewHeight
+      || virtualItemLast.y + virtualItemLast.height < this._scrollTop + this._viewHeight
+    ) {
       this._startIndex = this._scrollDirection < 0 ? this._findStartIndex(0, this._endIndex) : this._findStartIndex(this._startIndex, this._items.length - 1)
       if (this._startIndex === -1) return
       this._endIndex = this._findEndIndex(this._startIndex)

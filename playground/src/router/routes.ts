@@ -11,4 +11,9 @@ export const routes: RouteRecordRaw[] = [
     name: 'organizationChart',
     component: () => import('../pages/OrganizationChart.vue'),
   },
+  {
+    path: '/virtual-list',
+    name: 'virtualList',
+    component: () => import('../pages/VirtualListExample.vue'),
+  },
 ]

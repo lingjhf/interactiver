@@ -9,7 +9,9 @@ import 'vuetify/styles'
 import './styles.css'
 
 const vuetify = createVuetify({
-
+  theme: {
+    defaultTheme: 'dark',
+  },
 })
 
 const app = createApp(App)
