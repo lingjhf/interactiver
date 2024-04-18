@@ -151,6 +151,7 @@ function generateItems(value: number): VirtualListItemRaw[] {
 function reset() {
   itemsCount.value = 1000
   items.value = generateItems(itemsCount.value)
+  selectedItems.value = new Map()
 }
 
 </script>
