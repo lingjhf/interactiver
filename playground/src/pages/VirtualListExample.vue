@@ -14,11 +14,9 @@
           :style='{ height: `${item.height}px` }'
         >
           <v-checkbox
-            color='red'
             hide-details
-            label='red'
-            :model-value='true'
-            value='red'
+            :model-value='!!selectedItems.get(item.index)'
+            @update:model-value='onSelectedItem($event,item)'
           />
           id: {{ item.id }}
           <div>
@@ -71,6 +69,23 @@
           删除
         </v-btn>
       </div>
+      <div class='flex flex-wrap'>
+        <v-chip
+          v-for='item in selectedItems.values()'
+          :key='item.id'
+        >
+          {{ item.id }}
+        </v-chip>
+      </div>
+      <div class='flex'>
+        <v-btn
+          class='mt-2 ml-auto'
+          style='--v-btn-height:40px'
+          @click='onRemoveSelectedItems'
+        >
+          删除
+        </v-btn>
+      </div>
       <v-btn
         class='w-full mt-auto'
         @click='reset'
@@ -86,6 +101,8 @@ import { VirtualListItemRaw, VirtualListItem } from '@interactiver/virtual-list'
 
 const itemsCount = ref(1000)
 const removeIndexRange = ref<{ start?: number, end?: number, }>({ start: 10, end: 20 })
+const selectedItems = ref<Map<number, VirtualListItem>>(new Map())
+
 const items = ref<VirtualListItemRaw[]>(generateItems(itemsCount.value))
 const virtualItems = ref<VirtualListItem[]>([])
 
@@ -103,6 +120,24 @@ function onRemoveRange() {
   if (!isNaN(startIndex) && !isNaN(endIndex) && endIndex > startIndex) {
     items.value = [...items.value.slice(0, startIndex), ...items.value.slice(endIndex, items.value.length)]
   }
+}
+
+function onSelectedItem(value: boolean | null, item: VirtualListItem) {
+  if (value) {
+    selectedItems.value.set(item.index, item)
+  }
+  else {
+    selectedItems.value.delete(item.index)
+  }
+}
+
+function onRemoveSelectedItems() {
+  const allItems = [...items.value]
+  for (const index of Array.from(selectedItems.value.keys()).sort((a, b) => b - a)) {
+    allItems.splice(index, 1)
+  }
+  items.value = allItems
+  selectedItems.value = new Map()
 }
 
 function getRandom(min: number, max: number) {

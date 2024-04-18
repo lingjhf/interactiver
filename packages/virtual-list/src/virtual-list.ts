@@ -97,27 +97,17 @@ export class VirtualList {
     return this._virtualItems
   }
 
-  remove(...items: VirtualListItem[]): this {
-    return this
-  }
-
-  add(...items: VirtualListItem[]): this {
-    return this
-  }
-
-  insert(...items: VirtualListItem[]): this {
-    return this
-  }
-
   setItems(items: VirtualListItemRaw[]): this {
-    this._scrollTop = 0
-    this._startIndex = -1
-    this._endIndex = -1
-    this._virtualItems = []
     this._items = this._generateItems(items)
     const lastItem = this.getLastItem()
     if (lastItem) {
       this._totalHeight = lastItem.y + lastItem.height
+      this._startIndex = -1
+      this._endIndex = -1
+      this._virtualItems = []
+      if (this._totalHeight < this._viewHeight + this._scrollTop) {
+        this._scrollTop = this._totalHeight - this._viewHeight
+      }
     }
     return this
   }

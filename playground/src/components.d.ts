@@ -19,12 +19,15 @@ declare module 'vue' {
     SplitterPanel: typeof import('primevue/splitterpanel')['default']
     VBtn: typeof import('vuetify/components')['VBtn']
     VCheckbox: typeof import('vuetify/components')['VCheckbox']
+    VCol: typeof import('vuetify/components')['VCol']
+    VContainer: typeof import('vuetify/components')['VContainer']
     VDivider: typeof import('vuetify/components')['VDivider']
     VirtualList: typeof import('./components/VirtualList.vue')['default']
     VItems: typeof import('vuetify/components')['VItems']
     VList: typeof import('vuetify/components')['VList']
     VRadio: typeof import('vuetify/components')['VRadio']
     VRangeSlider: typeof import('vuetify/components')['VRangeSlider']
+    VRow: typeof import('vuetify/components')['VRow']
     VTextField: typeof import('vuetify/components')['VTextField']
   }
 }
