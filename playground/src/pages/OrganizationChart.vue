@@ -19,19 +19,18 @@
 </template>
 
 <script setup lang="ts">
-import { TreeLayout, TreeLayoutNode, Edge } from '@interactiver/core'
+import { TreeLayout, Node } from '@interactiver/core'
 import { Container } from '@interactiver/view'
 
 let interactive: Container
 let content: Container
 
-const treeLayout = new TreeLayout()
-const nodes = generateTree(treeLayout, 5)
+const treeLayout = new TreeLayout(new Node({ width: 300, height: 200 }))
+generateTree(treeLayout.root, 5)
 
 const interactiveRef = shallowRef<HTMLDivElement>()
 const canvasRef = shallowRef<HTMLDivElement>()
-const treeNodes = ref<TreeLayoutNode[]>([])
-const treeEdges = ref<Edge<TreeLayoutNode>[]>([])
+const treeNodes = ref<Node[]>([])
 
 onMounted(() => {
   if (interactiveRef.value && canvasRef.value) {
@@ -43,7 +42,7 @@ onMounted(() => {
     interactive.on('zoom', () => {
       renderCanvas()
     })
-    autoLayout()
+    treeNodes.value = treeLayout.layout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 })
   }
 })
 
@@ -53,26 +52,20 @@ function renderCanvas() {
   content.render()
 }
 
-function autoLayout() {
-  treeLayout.add(nodes[0]).layout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 })
-  treeNodes.value = treeLayout.nodes
-  treeEdges.value = treeLayout.edges
-}
-
-function generateTree(layout: TreeLayout, deep: number, level = 0, parent: TreeLayoutNode[] = []) {
-  const nodes: TreeLayoutNode[] = []
+function generateTree(parent: Node, deep: number, level = 1) {
+  const nodes: Node[] = []
   if (level < deep) {
-    if (parent.length === 0) {
-      nodes.push(...Array.from({ length: level + 1 }, () => new TreeLayoutNode(layout, { width: 300, height: 200 })))
+    nodes.push(...Array.from({ length: level + 1 }, () => {
+      const node = new Node({ width: 300, height: 200 })
+      treeLayout.setNode(node, parent)
+
+      return node
+    }))
+    level++
+    for (const node of nodes) {
+      generateTree(node, deep, level)
     }
-    for (const parentNode of parent) {
-      const children = Array.from({ length: level + 1 }, () => new TreeLayoutNode(layout, { width: 300, height: 200 }))
-      parentNode.add(...children)
-      nodes.push(...children)
-    }
-    generateTree(layout, deep, ++level, nodes)
   }
-  return nodes
 }
 
 </script>

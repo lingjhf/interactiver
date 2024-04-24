@@ -1,25 +1,44 @@
 import dagre from 'dagre'
 
-import { NodeOptions, Node, Edge } from './base'
+import { Node } from './base'
 
-export type TreeGraphLabel = dagre.GraphLabel
+export type TreeLayoutLabel = dagre.GraphLabel
 
-type TreeLayoutNodeMap = Map<string, TreeLayoutNode>
-type TreeLayoutEdgeMap = Map<string, Edge<TreeLayoutNode>>
+export interface TreeLayoutNodeDetail {
+  offset: number,
+  limit: number,
+  expand: boolean,
+  node: Node,
+  parent?: TreeLayoutNodeDetail,
+  children: Map<string, TreeLayoutNodeDetail>,
+}
+
+export interface TreeLayoutNodeOptions {
+  offset?: number,
+  limit?: number,
+  expand?: boolean,
+}
 
 export class TreeLayout {
-  private _graph = new dagre.graphlib.Graph()
-
-  private _nodeMap: TreeLayoutNodeMap = new Map()
-
-  private _edgeMap: TreeLayoutEdgeMap = new Map()
-
-  get nodes(): TreeLayoutNode[] {
-    return [...this._nodeMap.values()]
+  constructor(root: Node) {
+    this._root = root
+    this._nodeMap.set(root.id, {
+      offset: 0,
+      limit: 10,
+      expand: true,
+      node: root,
+      children: new Map(),
+    })
   }
 
-  get edges(): Edge<TreeLayoutNode>[] {
-    return [...this._edgeMap.values()]
+  private _root: Node
+
+  private _graph = new dagre.graphlib.Graph()
+
+  private _nodeMap: Map<string, TreeLayoutNodeDetail> = new Map()
+
+  get root() {
+    return this._root
   }
 
   /**
@@ -28,187 +47,86 @@ export class TreeLayout {
    * @param label
    * @returns
    */
-  layout(label: TreeGraphLabel): this {
+  layout(label: TreeLayoutLabel): Node[] {
     this._graph = new dagre.graphlib.Graph()
     this._graph.setGraph(label)
     this._graph.setDefaultEdgeLabel(() => ({}))
-    for (const node of this._nodeMap.values()) {
-      this._graph.setNode(node.id, { width: node.width, height: node.height })
-    }
-    for (const edge of this._edgeMap.values()) {
-      this._graph.setEdge(edge.source.id, edge.target.id)
-    }
+    const nodes = this._layout(this._graph, this._root)
     dagre.layout(this._graph)
     for (const id of this._graph.nodes()) {
-      const node = this._nodeMap.get(id)
-      if (node) {
+      const detail = this._nodeMap.get(id)
+      if (detail) {
         const graphNode = this._graph.node(id)
-        node.position.set({ x: graphNode.x, y: graphNode.y })
+        detail.node.position.set({ x: graphNode.x, y: graphNode.y })
       }
     }
-    return this
+    return nodes
   }
 
-  /**
-   * 添加布局上的节点
-   * @param node
-   */
-  add(...children: TreeLayoutNode[]): this {
-    for (const child of children) {
-      this._nodeMap.set(child.id, child)
-      if (child.parent) {
-        this._edgeMap.set(child.id, new Edge(child.parent, child))
+  private _layout(graph: dagre.graphlib.Graph, node: Node): Node[] {
+    let nodes = [node]
+    graph.setNode(node.id, { width: node.width, height: node.height })
+    const detail = this._nodeMap.get(node.id)
+    if (detail) {
+      if (detail.parent) {
+        this._graph.setEdge(detail.parent.node.id, node.id)
       }
-      if (child.visibleChildren.length > 0 && child.expand) {
-        this.add(...child.visibleChildren)
-      }
-    }
-    return this
-  }
-
-  /**
-   * 移除布局上的节点
-   * @param node
-   */
-  remove(...children: TreeLayoutNode[]): this {
-    for (const child of children) {
-      this._nodeMap.delete(child.id)
-      this._edgeMap.delete(child.id)
-      if (this._nodeMap.size > 0 && child.visibleChildren.length > 0) {
-        this.remove(...child.visibleChildren)
+      if (detail.expand) {
+        for (const child of Array.from(detail.children.values()).slice(detail.offset, detail.offset + detail.limit)) {
+          nodes = [...nodes, ...this._layout(graph, child.node)]
+        }
       }
     }
-    return this
+    return nodes
   }
 
-  /**
-   * 清除所有节点
-   *
-   * @returns
-   */
-  clear(): this {
-    this._nodeMap.clear()
-    this._edgeMap.clear()
-    return this
-  }
-}
-
-export interface TreeLayoutNodeOptions extends NodeOptions {
-  offset?: number,
-  limit?: number,
-  expand?: boolean,
-}
-
-export class TreeLayoutNode extends Node {
-  constructor(layout: TreeLayout, options?: TreeLayoutNodeOptions) {
-    super(options)
-    this._layout = layout
-    this._offset = options?.offset ?? 0
-    this._limit = options?.limit ?? 10
-    this._expand = options?.expand ?? true
-    this._setVisibleChildren()
-  }
-
-  private _layout: TreeLayout
-
-  private _offset: number
-
-  private _limit: number
-
-  private _expand = true
-
-  private _visibleChildren: TreeLayoutNode[] = []
-
-  get parent(): TreeLayoutNode | undefined {
-    return this._parent as TreeLayoutNode
-  }
-
-  get children(): TreeLayoutNode[] {
-    return [...this._children.values()] as TreeLayoutNode[]
-  }
-
-  get limit(): number {
-    return this._limit
-  }
-
-  get offset(): number {
-    return this._offset
-  }
-
-  get expand(): boolean {
-    return this._expand
-  }
-
-  get visibleChildren(): TreeLayoutNode[] {
-    return this._visibleChildren
-  }
-
-  /**
-   * 设置偏移数量
-   *
-   * @param value
-   * @returns
-   */
-  setOffset(value: number): this {
-    this._offset = value
-    this._layout.remove(...this._visibleChildren)
-    this._setVisibleChildren()
-    this._layout.add(...this._visibleChildren)
-    return this
-  }
-
-  /**
-   * 设置限制数量
-   *
-   * @param value
-   * @returns
-   */
-  setLimit(value: number): this {
-    this._limit = value
-    this._layout.remove(...this._visibleChildren)
-    this._setVisibleChildren()
-    this._layout.add(...this._visibleChildren)
-    return this
-  }
-
-  /**
-   * 是否展开
-   *
-   * @param value
-   * @returns
-   */
-  setExpand(value: boolean): this {
-    this._expand = value
-    if (this._expand) {
-      this._layout.add(...this._visibleChildren)
+  setNode(node: Node, parent: Node, options?: TreeLayoutNodeOptions): this {
+    let nodeDetail = this._nodeMap.get(node.id)
+    if (!nodeDetail) {
+      const targetDetail = this._nodeMap.get(parent.id)
+      nodeDetail = {
+        offset: options?.offset ?? 0,
+        limit: options?.limit ?? 10,
+        expand: options?.expand ?? true,
+        parent: targetDetail,
+        node,
+        children: new Map(),
+      }
+      this._nodeMap.set(node.id, nodeDetail)
+      if (targetDetail) {
+        targetDetail.children.set(node.id, nodeDetail)
+      }
+      return this
     }
     else {
-      this._layout.remove(...this._visibleChildren)
+      const targetDetail = this._nodeMap.get(parent.id)
+      if (targetDetail && nodeDetail.parent !== targetDetail) {
+        nodeDetail.parent?.children?.delete(node.id)
+        nodeDetail.parent = targetDetail
+        targetDetail.children.set(node.id, nodeDetail)
+      }
+      nodeDetail.offset = options?.offset ?? nodeDetail.offset
+      nodeDetail.limit = options?.limit ?? nodeDetail.limit
+      nodeDetail.expand = options?.expand ?? nodeDetail.expand
     }
     return this
   }
 
-  add(...children: TreeLayoutNode[]): this {
-    super.add(...children)
-    this._setVisibleChildren()
-    this._layout.add(...this._visibleChildren)
-    return this
-  }
-
-  remove(...children: TreeLayoutNode[]): this {
-    super.remove(...children)
-    this._setVisibleChildren()
-    this._layout.remove(...this._visibleChildren)
+  remove(node: Node): this {
+    const nodeDetail = this._nodeMap.get(node.id)
+    if (nodeDetail) {
+      this._nodeMap.delete(node.id)
+      if (nodeDetail.children.size > 0) {
+        for (const detail of nodeDetail.children.values()) {
+          this.remove(detail.node)
+        }
+      }
+    }
     return this
   }
 
   clear(): this {
-    this._layout.remove(...this._visibleChildren)
-    super.clear()
+    this._nodeMap.clear()
     return this
-  }
-
-  private _setVisibleChildren() {
-    this._visibleChildren = this.children.slice(this._offset, this._offset + this._limit)
   }
 }
