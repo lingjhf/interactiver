@@ -1,7 +1,7 @@
 <template>
   <div
     ref='interactiveRef'
-    class='w-full h-full '
+    class='w-full h-full overflow-auto'
   >
     <div
       ref='canvasRef'
