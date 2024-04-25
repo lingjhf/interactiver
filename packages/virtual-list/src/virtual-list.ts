@@ -106,7 +106,8 @@ export class VirtualList {
       this._endIndex = -1
       this._virtualItems = []
       if (this._totalHeight < this._viewHeight + this._scrollTop) {
-        this._scrollTop = this._totalHeight - this._viewHeight
+        const scrollTop = this._totalHeight - this._viewHeight
+        this._scrollTop = scrollTop < 0 ? 0 : scrollTop
       }
     }
     return this
