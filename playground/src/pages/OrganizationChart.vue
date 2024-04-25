@@ -1,19 +1,62 @@
 <template>
-  <div
-    ref='interactiveRef'
-    class='w-full h-full relative overflow-auto'
-  >
-    <div
-      ref='canvasRef'
-      class=' absolute'
-    >
-      <div
-        v-for='item in treeNodes'
-        :key='item.id'
-        class=' absolute bg-blue-400'
-        :style='{width:`${item.width}px`,height:`${item.height}px`,left:`${item.x}px`,top:`${item.y}px`}'
-      />
-      <div />
+  <div class='flex h-full w-full'>
+    <div class='flex flex-col w-full'>
+      <v-tabs
+        v-model='tab'
+        class=' flex-shrink-0'
+      >
+        <v-tab value='html'>
+          html
+        </v-tab>
+        <v-tab value='svg'>
+          svg
+        </v-tab>
+      </v-tabs>
+      <v-window
+        v-model='tab'
+        class='h-full'
+      >
+        <v-window-item
+          class='h-full'
+          value='html'
+        >
+          <div class='w-full h-full flex justify-center items-center overflow-auto'>
+            <div
+              ref='interactiveRef'
+              class='w-full h-full relative overflow-auto'
+            >
+              <div
+                ref='canvasRef'
+                class=' absolute'
+              >
+                <div
+                  v-for='item in treeNodes'
+                  :key='item.id'
+                  class=' absolute bg-blue-400'
+                  :style='{width:`${item.width}px`,height:`${item.height}px`,left:`${item.x}px`,top:`${item.y}px`}'
+                />
+                <div />
+              </div>
+            </div>
+          </div>
+        </v-window-item>
+
+        <v-window-item
+          class='h-full'
+          value='svg'
+        >
+          Two
+        </v-window-item>
+      </v-window>
+    </div>
+    <v-divider
+      vertical
+    />
+    <div class='w-300px flex-shrink-0 flex flex-col p-2'>
+      <v-btn>导出图片</v-btn>
+      <v-btn class='mt-2'>
+        导出pdf
+      </v-btn>
     </div>
   </div>
 </template>
@@ -28,6 +71,7 @@ let content: Container
 const treeLayout = new TreeLayout(new Node({ width: 300, height: 200 }))
 generateTree(treeLayout.root, 5)
 
+const tab = ref('html')
 const interactiveRef = shallowRef<HTMLDivElement>()
 const canvasRef = shallowRef<HTMLDivElement>()
 const treeNodes = ref<Node[]>([])

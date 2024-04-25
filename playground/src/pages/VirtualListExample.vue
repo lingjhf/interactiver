@@ -1,5 +1,5 @@
 <template>
-  <div class='flex h-full w-full example'>
+  <div class='flex h-full w-full'>
     <div class='w-100% flex justify-center items-center overflow-auto'>
       <VirtualList
         class='w-400px border'
