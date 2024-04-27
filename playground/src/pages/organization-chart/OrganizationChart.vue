@@ -32,8 +32,7 @@
 </template>
 
 <script setup lang="ts">
-
-import { Canvg } from 'canvg'
+import { SvgExporter } from '@interactiver/utils'
 
 import SvgOrgChart from './SvgOrgChart.vue'
 const tab = ref('html')
@@ -51,42 +50,9 @@ function getTreeSize(): { width: number, height: number, } {
 
 async function exportImage() {
   const { width, height } = getTreeSize()
-
   const svgEl = svgRef.value?.$el as SVGElement
-  new SvgToImage(svgEl, width, height).export('org')
-}
-
-class SvgToImage {
-  constructor(element: Element, width: number, height: number) {
-    const serializer = new XMLSerializer()
-    const svgString = serializer.serializeToString(element)
-    const ctx = this._canvas.getContext('2d')!
-    this._canvas.width = width
-    this._canvas.height = height
-    this._canvg = Canvg.fromString(ctx, svgString)
-  }
-
-  private _canvg: Canvg
-
-  private _canvas = document.createElement('canvas')
-
-  export(name: string, type = 'image/png') {
-    this._canvg.start()
-    this._canvas.toBlob((blob) => {
-      if (!blob) return
-      this._download(name, window.URL.createObjectURL(blob))
-    }, type)
-  }
-
-  private _download(name: string, href: string) {
-    const downloadLink = document.createElement('a')
-    downloadLink.href = href
-    downloadLink.download = name
-    document.body.appendChild(downloadLink)
-    downloadLink.click()
-    window.URL.revokeObjectURL(href)
-    document.body.removeChild(downloadLink)
-  }
+  const exporter = new SvgExporter(svgEl)
+  exporter.download('abc', { width, height })
 }
 
 </script>

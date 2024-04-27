@@ -13,6 +13,7 @@
   "dependencies": {
     "@interactiver/core": "workspace:*",
     "@interactiver/scrollbar": "workspace:*",
+    "@interactiver/utils": "workspace:*",
     "@interactiver/view": "workspace:*",
     "@interactiver/virtual-list": "workspace:*",
     "@mdi/font": "6.2.95",

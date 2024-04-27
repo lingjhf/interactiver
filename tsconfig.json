@@ -9,6 +9,7 @@
       "@interactiver/core": ["./packages/core/src/index.ts"],
       "@interactiver/virtual-list": ["./packages/virtual-list/src/index.ts"],
       "@interactiver/scrollbar": ["./packages/scrollbar/src/index.ts"],
+      "@interactiver/utils": ["./packages/utils/src/index.ts"],
       "@interactiver/view": ["./packages/view/src/index.ts"],
       "@interactiver/gestures": ["./packages/gestures/src/index.ts"],
       "@interactiver/keyboard": ["./packages/keyboard/src/index.ts"]

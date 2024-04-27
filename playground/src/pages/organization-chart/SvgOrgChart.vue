@@ -28,6 +28,13 @@
           :height='node.height'
           :width='node.width'
         />
+        <path
+          v-if='node.children.length>0'
+          :d='drawExpand(node as Node)'
+          :fill='"white"'
+          stroke='#bdbdbd'
+          stroke-width='2'
+        />
       </g>
     </g>
   </svg>
@@ -35,13 +42,14 @@
 
 <script setup lang="ts">
 
-import { Node } from '@interactiver/core'
 import { D3Tree, D3TreeEdge, Container } from '@interactiver/view'
+import * as d3 from 'd3'
 
 import { generateTree } from '../../utils'
+import type { Node } from '@interactiver/core'
 
 const emit = defineEmits<{
-  treeChange: [value: SVGGElement],
+  change: [value: SVGGElement],
 }>()
 
 const containerRef = shallowRef<SVGGElement>()
@@ -84,9 +92,15 @@ function resetTree() {
   nodes.value = d3Tree.nodes
   if (canvasRef.value) {
     nextTick(() => {
-      canvasRef.value && emit('treeChange', canvasRef.value)
+      canvasRef.value && emit('change', canvasRef.value)
     })
   }
+}
+
+function drawExpand(node: Node) {
+  const path = d3.path()
+  path.arc(node.width, node.height / 2, 8, 0, Math.PI * 2)
+  return path.toString()
 }
 
 </script>
