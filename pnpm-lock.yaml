@@ -30,7 +30,7 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2
       d3:
-        specifier: ^7.8.5
+        specifier: ^7.9.0
         version: 7.9.0
       dagre:
         specifier: ^0.8.5

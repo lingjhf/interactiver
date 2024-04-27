@@ -1,8 +1,11 @@
 import dagre from 'dagre'
 
 import { Node } from './base'
+export type TreeLayoutDirection = 'LR' | 'RL' | 'TB' | 'BT'
 
-export type TreeLayoutLabel = dagre.GraphLabel
+export type TreeLayoutLabel = dagre.GraphLabel & {
+  rankdir?: TreeLayoutDirection,
+}
 
 export interface TreeLayoutNodeDetail {
   offset: number,

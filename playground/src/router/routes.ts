@@ -9,7 +9,7 @@ export const routes: RouteRecordRaw[] = [
   {
     path: '/organization-chart',
     name: 'organizationChart',
-    component: () => import('../pages/OrganizationChart.vue'),
+    component: () => import('../pages/organization-chart'),
   },
   {
     path: '/virtual-list',

@@ -12,48 +12,18 @@
           svg
         </v-tab>
       </v-tabs>
-      <v-window
-        v-model='tab'
-        class='h-full'
-      >
-        <v-window-item
-          class='h-full'
-          value='html'
-        >
-          <div class='w-full h-full flex justify-center items-center overflow-auto'>
-            <div
-              ref='interactiveRef'
-              class='w-full h-full relative overflow-auto'
-            >
-              <div
-                ref='canvasRef'
-                class=' absolute'
-              >
-                <div
-                  v-for='item in treeNodes'
-                  :key='item.id'
-                  class=' absolute bg-blue-400'
-                  :style='{width:`${item.width}px`,height:`${item.height}px`,left:`${item.x}px`,top:`${item.y}px`}'
-                />
-                <div />
-              </div>
-            </div>
-          </div>
-        </v-window-item>
-
-        <v-window-item
-          class='h-full'
-          value='svg'
-        >
-          Two
-        </v-window-item>
-      </v-window>
+      <svg-org-chart
+        ref='svgRef'
+        @tree-change='onTreeChange'
+      />
     </div>
     <v-divider
       vertical
     />
     <div class='w-300px flex-shrink-0 flex flex-col p-2'>
-      <v-btn>导出图片</v-btn>
+      <v-btn @click='exportImage'>
+        导出图片
+      </v-btn>
       <v-btn class='mt-2'>
         导出pdf
       </v-btn>
@@ -62,59 +32,64 @@
 </template>
 
 <script setup lang="ts">
-import { TreeLayout, Node } from '@interactiver/core'
-import { Container } from '@interactiver/view'
 
-let interactive: Container
-let content: Container
+import { Canvg } from 'canvg'
 
-const treeLayout = new TreeLayout(new Node({ width: 300, height: 200 }))
-generateTree(treeLayout.root, 5)
-
+import SvgOrgChart from './SvgOrgChart.vue'
 const tab = ref('html')
-const interactiveRef = shallowRef<HTMLDivElement>()
-const canvasRef = shallowRef<HTMLDivElement>()
-const treeNodes = ref<Node[]>([])
+const svgRef = shallowRef<InstanceType<typeof SvgOrgChart>>()
+let treeElement: SVGGElement | undefined
 
-onMounted(() => {
-  if (interactiveRef.value && canvasRef.value) {
-    interactive = new Container(interactiveRef.value, { draggable: true, wheelZoom: true })
-    content = new Container(canvasRef.value)
-    interactive.on('drag', () => {
-      renderCanvas()
-    })
-    interactive.on('zoom', () => {
-      renderCanvas()
-    })
-    treeNodes.value = treeLayout.layout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 })
-  }
-})
-
-function renderCanvas() {
-  content.position.set(interactive.position)
-  content.zoom.set(interactive.zoom)
-  content.render()
+function onTreeChange(value: SVGGElement) {
+  treeElement = value
 }
 
-function generateTree(parent: Node, deep: number, level = 1) {
-  const nodes: Node[] = []
-  if (level < deep) {
-    nodes.push(...Array.from({ length: level + 1 }, () => {
-      const node = new Node({ width: 300, height: 200 })
-      treeLayout.setNode(node, parent)
+function getTreeSize(): { width: number, height: number, } {
+  const { x = 0, y = 0, width = 0, height = 0 } = treeElement?.getBoundingClientRect() ?? {}
+  return { width: x + width, height: y + height }
+}
 
-      return node
-    }))
-    level++
-    for (const node of nodes) {
-      generateTree(node, deep, level)
-    }
+async function exportImage() {
+  const { width, height } = getTreeSize()
+
+  const svgEl = svgRef.value?.$el as SVGElement
+  new SvgToImage(svgEl, width, height).export('org')
+}
+
+class SvgToImage {
+  constructor(element: Element, width: number, height: number) {
+    const serializer = new XMLSerializer()
+    const svgString = serializer.serializeToString(element)
+    const ctx = this._canvas.getContext('2d')!
+    this._canvas.width = width
+    this._canvas.height = height
+    this._canvg = Canvg.fromString(ctx, svgString)
+  }
+
+  private _canvg: Canvg
+
+  private _canvas = document.createElement('canvas')
+
+  export(name: string, type = 'image/png') {
+    this._canvg.start()
+    this._canvas.toBlob((blob) => {
+      if (!blob) return
+      this._download(name, window.URL.createObjectURL(blob))
+    }, type)
+  }
+
+  private _download(name: string, href: string) {
+    const downloadLink = document.createElement('a')
+    downloadLink.href = href
+    downloadLink.download = name
+    document.body.appendChild(downloadLink)
+    downloadLink.click()
+    window.URL.revokeObjectURL(href)
+    document.body.removeChild(downloadLink)
   }
 }
 
 </script>
-
-<style scoped></style>
 
 <!--
 import { TreeLayoutNode } from '@interactiver/core'

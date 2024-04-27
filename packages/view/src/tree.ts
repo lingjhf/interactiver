@@ -1,40 +1,68 @@
-import { TreeLayout, TreeLayoutNode, Edge, TreeGraphLabel } from '@interactiver/core'
+import { TreeLayout, Node, TreeLayoutLabel, TreeLayoutDirection, Edge } from '@interactiver/core'
+import * as d3 from 'd3'
 
-export interface TreeOptions {
-  renderNode?: (node: TreeLayoutNode) => HTMLElement | SVGElement,
-  renderEdge?: (edge: Edge<TreeLayoutNode>) => HTMLElement | SVGElement,
+import { generateLRCurve, generateRLCurve, generateTBCurve, generateBTCurve } from './paths'
+
+export interface D3TreeEdge {
+  d: string,
+  edge: Edge<Node>,
 }
 
-export class Tree {
-  constructor(options?: TreeOptions) {
-    this.layout = new TreeLayout()
-    this._renderNode = options?.renderNode
-    this._renderEdge = options?.renderEdge
+export class D3Tree {
+  constructor(root: Node) {
+    this._layout = new TreeLayout(root)
+    this._initNodes(this._layout.root.children)
   }
 
-  readonly layout: TreeLayout
+  private _layout: TreeLayout
 
-  private _renderNode?: (node: TreeLayoutNode) => void
+  private _nodes: Node[] = []
 
-  private _renderEdge?: (node: Edge<TreeLayoutNode>) => void
+  private _direction: TreeLayoutDirection = 'LR'
 
-  elements: (HTMLElement | SVGElement)[] = []
+  get nodes(): Node[] {
+    return this._nodes
+  }
 
-  autoLayout(options: TreeGraphLabel): this {
-    this.layout.layout(options)
-    this.elements = []
-    for (const edge of this.layout.edges) {
-      const e = this._renderEdge?.(edge)
-      if (e) {
-        this.elements.push(e)
+  get edges(): D3TreeEdge[] {
+    const d3TreeEdges: D3TreeEdge[] = []
+    for (const node of this._nodes) {
+      if (node.parent) {
+        const edge = new Edge(node.parent, node)
+        let path: d3.Path
+        switch (this._direction) {
+          case 'RL':
+            path = generateRLCurve(edge)
+            break
+          case 'TB':
+            path = generateTBCurve(edge)
+            break
+          case 'BT':
+            path = generateBTCurve(edge)
+            break
+          default:
+            path = generateLRCurve(edge)
+        }
+        d3TreeEdges.push({ d: path.toString(), edge })
       }
     }
-    for (const node of this.layout.nodes) {
-      const n = this._renderNode?.(node)
-      if (n) {
-        this.elements.push(n)
-      }
-    }
+    return d3TreeEdges
+  }
+
+  layout(options: TreeLayoutLabel): this {
+    this._direction = options.rankdir ?? this._direction
+    this._nodes = this._layout.layout(options)
     return this
+  }
+
+  private _initNodes(nodes: Node[]) {
+    for (const node of nodes) {
+      if (node.parent) {
+        this._layout.setNode(node, node.parent)
+        if (node.children.length > 0) {
+          this._initNodes(node.children)
+        }
+      }
+    }
   }
 }
