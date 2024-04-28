@@ -24,6 +24,7 @@
     "eventemitter3": "^5.0.1",
     "hammerjs": "^2.0.8",
     "hotkeys-js": "^3.13.7",
+    "pixi.js": "^8.1.0",
     "uuid": "^9.0.1",
     "vue": "^3.4.21",
     "vue-router": "4",

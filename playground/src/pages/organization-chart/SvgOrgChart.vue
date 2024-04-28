@@ -28,13 +28,7 @@
           :height='node.height'
           :width='node.width'
         />
-        <path
-          v-if='node.children.length>0'
-          :d='drawExpand(node as Node)'
-          :fill='"white"'
-          stroke='#bdbdbd'
-          stroke-width='2'
-        />
+        <text y='16'>{{ node.meta.name }}</text>
       </g>
     </g>
   </svg>
@@ -42,19 +36,19 @@
 
 <script setup lang="ts">
 
+import { Node } from '@interactiver/core'
+import { SvgExporter } from '@interactiver/utils'
 import { D3Tree, D3TreeEdge, Container } from '@interactiver/view'
 import * as d3 from 'd3'
 
-import { generateTree } from '../../utils'
-import type { Node } from '@interactiver/core'
+import treeData from '../../data/tree.json'
 
 const emit = defineEmits<{
   change: [value: SVGGElement],
 }>()
 
 const containerRef = shallowRef<SVGGElement>()
-const root = generateTree(5)
-const d3Tree = new D3Tree(root)
+const d3Tree = new D3Tree(getRootNode(treeData))
 
 const edges = ref<D3TreeEdge[]>([])
 const nodes = ref<Node[]>([])
@@ -80,6 +74,11 @@ function initInteractive() {
       content.zoom.set(interactive.zoom)
       content.render()
     }
+
+    const exporter = new SvgExporter(interactiveRef.value)
+    exporter.download('abc', { width: 800, height: 10000 })
+    // content.position.set({ x: -1000 })
+    // content.render()
   }
   if (containerRef) {
     resetTree()
@@ -87,7 +86,7 @@ function initInteractive() {
 }
 
 function resetTree() {
-  d3Tree.layout({ rankdir: 'LR', nodesep: 100, ranksep: 1000 })
+  d3Tree.layout({ rankdir: 'LR', nodesep: 50, ranksep: 100 })
   edges.value = d3Tree.edges
   nodes.value = d3Tree.nodes
   if (canvasRef.value) {
@@ -101,6 +100,19 @@ function drawExpand(node: Node) {
   const path = d3.path()
   path.arc(node.width, node.height / 2, 8, 0, Math.PI * 2)
   return path.toString()
+}
+
+function getRootNode(data: any) {
+  const node = new Node({
+    width: 150,
+    height: 90, meta: { name: data.name } })
+  if (Array.isArray(data.children)) {
+    for (const child of data.children) {
+      const childNode = getRootNode(child)
+      node.add(childNode)
+    }
+  }
+  return node
 }
 
 </script>
