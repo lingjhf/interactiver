@@ -1,11 +1,12 @@
 {
-  "name": "@interactiver/view",
+  "name": "interactiver",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "docs": "npm -C docs run docs:dev",
     "play": "npm -C playground run dev",
+    "diagram":"pnpm -C diagram run dev",
     "lint": "eslint --ext .ts,.tsx,.js,.mjs .",
     "format": "pnpm lint --fix",
     "test": "vitest"
