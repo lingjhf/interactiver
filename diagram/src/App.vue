@@ -1,6 +1,7 @@
 <template>
   <div class='w-screen h-screen flex justify-center items-center'>
-    <ZoomMenu />
+    <DatabaseTable name='User' />
+    <!-- <ZoomMenu /> -->
   </div>
 </template>
 

@@ -8,13 +8,18 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AButton: typeof import('@arco-design/web-vue')['Button']
+    ACheckbox: typeof import('@arco-design/web-vue')['Checkbox']
+    AInput: typeof import('@arco-design/web-vue')['Input']
     AS: typeof import('@arco-design/web-vue')['S']
     ASlider: typeof import('@arco-design/web-vue')['Slider']
     ASpace: typeof import('@arco-design/web-vue')['Space']
+    ATag: typeof import('@arco-design/web-vue')['Tag']
+    DatabaseTable: typeof import('./components/DatabaseTable.vue')['default']
     Editor: typeof import('./components/Editor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Sidebar: typeof import('./components/Sidebar.vue')['default']
+    TableList: typeof import('./components/TableList.vue')['default']
     ZoomMenu: typeof import('./components/ZoomMenu.vue')['default']
   }
 }
