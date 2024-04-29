@@ -1,9 +1,9 @@
 import Vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
+import { ArcoResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
-import Vuetify from 'vite-plugin-vuetify'
 
 import { alias } from '../alias'
 
@@ -12,20 +12,18 @@ export default defineConfig({
   plugins: [
     UnoCSS(),
     Vue(),
-    Vuetify(),
     Components({
       dirs: [
         'src/components',
       ],
-      resolvers: [
-      ],
+      resolvers: [ArcoResolver()],
       dts: 'src/components.d.ts',
     }),
     AutoImport({
       imports: [
         'vue',
-        'vue-router',
       ],
+      resolvers: [ArcoResolver()],
       dirs: [
         'src/composables',
       ],

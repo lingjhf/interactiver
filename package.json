@@ -6,12 +6,13 @@
   "scripts": {
     "docs": "npm -C docs run docs:dev",
     "play": "npm -C playground run dev",
-    "diagram":"pnpm -C diagram run dev",
+    "diagram": "pnpm -C diagram run dev",
     "lint": "eslint --ext .ts,.tsx,.js,.mjs .",
     "format": "pnpm lint --fix",
     "test": "vitest"
   },
   "dependencies": {
+    "@arco-design/web-vue": "^2.55.1",
     "@interactiver/core": "workspace:*",
     "@interactiver/scrollbar": "workspace:*",
     "@interactiver/utils": "workspace:*",

@@ -1,6 +1,6 @@
 <template>
-  <div class='w-screen h-screen flex'>
-  
+  <div class='w-screen h-screen flex justify-center items-center'>
+    <ZoomMenu />
   </div>
 </template>
 
