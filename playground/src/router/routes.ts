@@ -16,4 +16,9 @@ export const routes: RouteRecordRaw[] = [
     name: 'virtualList',
     component: () => import('../pages/VirtualListExample.vue'),
   },
+  {
+    path: '/test',
+    name: 'test',
+    component: () => import('../pages/Test.vue'),
+  },
 ]

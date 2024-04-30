@@ -42,7 +42,7 @@ import { SvgExporter } from '@interactiver/utils'
 import PixiOrgChart from './PixiOrgChart.vue'
 import SvgOrgChart from './SvgOrgChart.vue'
 
-const tab = ref('pixi')
+const tab = ref('svg')
 const svgRef = shallowRef<InstanceType<typeof SvgOrgChart>>()
 let treeElement: SVGGElement | undefined
 

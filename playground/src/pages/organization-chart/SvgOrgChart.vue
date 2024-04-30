@@ -74,11 +74,6 @@ function initInteractive() {
       content.zoom.set(interactive.zoom)
       content.render()
     }
-
-    const exporter = new SvgExporter(interactiveRef.value)
-    exporter.download('abc', { width: 800, height: 10000 })
-    // content.position.set({ x: -1000 })
-    // content.render()
   }
   if (containerRef) {
     resetTree()
@@ -92,6 +87,8 @@ function resetTree() {
   if (canvasRef.value) {
     nextTick(() => {
       canvasRef.value && emit('change', canvasRef.value)
+      const exporter = new SvgExporter(interactiveRef.value)
+      exporter.download('abc')
     })
   }
 }
