@@ -1,9 +1,13 @@
 <template>
-  <div class='h-screen w-screen'>
-    <Editor />
+  <div>
+    r
   </div>
 </template>
 
 <script setup lang="ts">
 
 </script>
+
+<style scoped>
+
+</style>

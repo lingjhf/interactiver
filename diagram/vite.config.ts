@@ -15,6 +15,7 @@ export default defineConfig({
     Components({
       dirs: [
         'src/components',
+        'src/icons',
       ],
       resolvers: [ArcoResolver()],
       dts: 'src/components.d.ts',
