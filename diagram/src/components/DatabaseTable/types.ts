@@ -7,3 +7,7 @@ export interface DatabaseTableStructureProps extends Partial<DatabaseTable> {
 export interface DatabaseTableColumnsProps {
   data?: DatabaseTableField[],
 }
+
+export interface DatabaseTableListProps {
+  data?: DatabaseTable[],
+}

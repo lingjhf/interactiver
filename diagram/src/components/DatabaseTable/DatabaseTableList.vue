@@ -48,7 +48,7 @@
 import { TreeNodeData } from '@arco-design/web-vue'
 import { IconDown, IconPlus } from '@arco-design/web-vue/es/icon'
 
-import { DatabaseTableListProps } from './DatabaseTableList.types'
+import { DatabaseTableListProps } from './types'
 import { DatabaseTable } from '../../types'
 
 const props = withDefaults(defineProps<DatabaseTableListProps>(), {
