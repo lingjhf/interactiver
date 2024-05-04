@@ -124,8 +124,13 @@ async function exportPDF() {
 }
 
 function svgToPdf(root: globalThis.Node, width: number, height: number) {
-  const chunks = 5
-  const chunkHeight = height / chunks
+  const pdfPageSize = { width: 595.28, height: 841.89 }
+  const chunkHeight = width / pdfPageSize.width * pdfPageSize.height
+  const overflowHeight = height % chunkHeight
+  const chunks = Array.from({ length: Math.floor(height / chunkHeight) }, () => chunkHeight)
+  if (overflowHeight > 0) {
+    chunks.push(overflowHeight)
+  }
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
   if (!ctx) {
@@ -133,22 +138,21 @@ function svgToPdf(root: globalThis.Node, width: number, height: number) {
   }
   const doc = new PDFDocument({ size: 'A4' })
   const stream = doc.pipe(blobStream())
-  console.log(doc)
   const svg = new XMLSerializer().serializeToString(root)
   const canvg = Canvg.fromString(ctx, svg)
-  canvg.resize(width, chunkHeight)
-  const h = chunkHeight / (width / 595.28)
-  const w = 595.28
-  for (let i = 0; i < chunks; i++) {
-    canvg.start({ offsetY: 0 - (i * chunkHeight) })
+  let offsetY = 0
+  for (let i = 0; i < chunks.length; i++) {
+    if (i > 0) {
+      doc.addPage({ size: 'A4' })
+    }
+    const chunkH = chunks[i]
+    canvg.resize(width, chunkH)
+    canvg.start({ offsetY: 0 - offsetY })
+    offsetY += chunkH
     doc.image(canvas.toDataURL('image/png'), 0, 0, {
-      width: w,
-      height: h,
-      // fit: [pdfWidth, pdfHeight],
-      // align: 'center',
-      // valign: 'center',
+      width: pdfPageSize.width,
+      height: pdfPageSize.height,
     })
-    console.log('ok')
   }
   doc.end()
   stream.on('finish', function () {
