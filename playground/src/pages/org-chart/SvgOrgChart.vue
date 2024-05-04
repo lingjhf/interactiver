@@ -49,7 +49,8 @@ import { Node } from '@interactiver/core'
 import { SvgExporter, elementToString, autoDownloadBlob } from '@interactiver/utils'
 import { D3Tree, D3TreeEdge, Container } from '@interactiver/view'
 import { Canvg } from 'canvg'
-import { jsPDF } from 'jspdf'
+import '../../plugins/blob-stream'
+import '../../plugins/pdfkit.standalone'
 
 import TestPng0 from './test0.png'
 import TestPng1 from './test1.png'
@@ -114,21 +115,15 @@ function exportSVG() {
 
 }
 
-function exportPDF() {
+async function exportPDF() {
   if (!interactiveRef.value) {
     return
   }
   const { x = 0, y = 0, width = 0, height = 0 } = canvasRef.value?.getBoundingClientRect() ?? {}
-  const pdf = new jsPDF({ unit: 'px' })
-  const res = pdf.getPageInfo(1)
-  const { topRightX = 0, topRightY = 0 } = res.pageContext.mediaBox
-  pdf.addImage(TestPng0, 'png', 0, 0, topRightX, topRightY)
-  pdf.save('test.pdf')
-  // svgToPdf(interactiveRef.value, Math.round(x + width), Math.round(y + height))
+  svgToPdf(interactiveRef.value, Math.round(x + width), Math.round(y + height))
 }
 
 function svgToPdf(root: globalThis.Node, width: number, height: number) {
-  const pdf = new jsPDF()
   const chunks = 5
   const chunkHeight = height / chunks
   const canvas = document.createElement('canvas')
@@ -136,33 +131,31 @@ function svgToPdf(root: globalThis.Node, width: number, height: number) {
   if (!ctx) {
     return
   }
+  const doc = new PDFDocument({ size: 'A4' })
+  const stream = doc.pipe(blobStream())
+  console.log(doc)
   const svg = new XMLSerializer().serializeToString(root)
   const canvg = Canvg.fromString(ctx, svg)
   canvg.resize(width, chunkHeight)
-  const images = [TestPng0, TestPng1, TestPng2, TestPng3, TestPng4]
+  const h = chunkHeight / (width / 595.28)
+  const w = 595.28
   for (let i = 0; i < chunks; i++) {
     canvg.start({ offsetY: 0 - (i * chunkHeight) })
-    // canvas.toBlob(((blob) => {
-    //   if (blob) {
-    //     autoDownloadBlob(`test${i}`, blob)
-    //   }
-    // }))
-    // const pdfWidth = width / 50
-    // const pdfHeight = chunkHeight / 50
-    // console.log(0, 0, Math.round(pdfWidth), Math.round(pdfHeight))
-    // if (i < 2) {
-    //   pdf.addPage()
-
-    //   pdf.addImage(canvas.toDataURL('image/png'), 'png', 0, 0, Math.round(pdfWidth), Math.round(pdfHeight))
-    // }
-    if (i > 0) {
-      pdf.addPage()
-    }
-    // pdf.addImage(images[i], 'png', 0, 0, 400, 800)
-    canvg.stop()
+    doc.image(canvas.toDataURL('image/png'), 0, 0, {
+      width: w,
+      height: h,
+      // fit: [pdfWidth, pdfHeight],
+      // align: 'center',
+      // valign: 'center',
+    })
+    console.log('ok')
   }
+  doc.end()
+  stream.on('finish', function () {
+    const blob = stream.toBlob('application/pdf')
+    autoDownloadBlob('test', blob)
+  })
   canvg.stop()
-  pdf.save('test.pdf')
 }
 
 </script>
