@@ -26,6 +26,7 @@
     "eventemitter3": "^5.0.1",
     "hammerjs": "^2.0.8",
     "hotkeys-js": "^3.13.7",
+    "jspdf": "^2.5.1",
     "pixi.js": "^8.1.0",
     "uuid": "^9.0.1",
     "vue": "^3.4.21",

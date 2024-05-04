@@ -7,6 +7,9 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AButton: typeof import('@arco-design/web-vue')['Button']
+    ATabPane: typeof import('@arco-design/web-vue')['TabPane']
+    ATabs: typeof import('@arco-design/web-vue')['Tabs']
     Button: typeof import('primevue/button')['default']
     InteractiveView: typeof import('./components/example/InteractiveView.vue')['default']
     Layout: typeof import('./components/Layout.vue')['default']
