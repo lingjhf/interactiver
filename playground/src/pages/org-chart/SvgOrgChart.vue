@@ -46,17 +46,9 @@
 <script setup lang="ts">
 
 import { Node } from '@interactiver/core'
-import { SvgExporter, elementToString, autoDownloadBlob } from '@interactiver/utils'
+import { svgToPdf } from '@interactiver/export-file'
 import { D3Tree, D3TreeEdge, Container } from '@interactiver/view'
-import { Canvg } from 'canvg'
-import '../../plugins/blob-stream'
-import '../../plugins/pdfkit.standalone'
 
-import TestPng0 from './test0.png'
-import TestPng1 from './test1.png'
-import TestPng2 from './test2.png'
-import TestPng3 from './test3.png'
-import TestPng4 from './test4.png'
 import treeData from '../../data/tree.json'
 
 const containerRef = shallowRef<SVGGElement>()
@@ -66,6 +58,8 @@ const edges = ref<D3TreeEdge[]>([])
 const nodes = ref<Node[]>([])
 const interactiveRef = shallowRef<SVGElement>()
 const canvasRef = shallowRef<SVGGElement>()
+
+const worker = new Worker(import.meta.resolve('./worker.js'), { type: 'module' })
 
 onMounted(() => {
   initInteractive()
@@ -121,45 +115,6 @@ async function exportPDF() {
   }
   const { x = 0, y = 0, width = 0, height = 0 } = canvasRef.value?.getBoundingClientRect() ?? {}
   svgToPdf(interactiveRef.value, Math.round(x + width), Math.round(y + height))
-}
-
-function svgToPdf(root: globalThis.Node, width: number, height: number) {
-  const pdfPageSize = { width: 595.28, height: 841.89 }
-  const chunkHeight = width / pdfPageSize.width * pdfPageSize.height
-  const overflowHeight = height % chunkHeight
-  const chunks = Array.from({ length: Math.floor(height / chunkHeight) }, () => chunkHeight)
-  if (overflowHeight > 0) {
-    chunks.push(overflowHeight)
-  }
-  const canvas = document.createElement('canvas')
-  const ctx = canvas.getContext('2d')
-  if (!ctx) {
-    return
-  }
-  const doc = new PDFDocument({ size: 'A4' })
-  const stream = doc.pipe(blobStream())
-  const svg = new XMLSerializer().serializeToString(root)
-  const canvg = Canvg.fromString(ctx, svg)
-  let offsetY = 0
-  for (let i = 0; i < chunks.length; i++) {
-    if (i > 0) {
-      doc.addPage({ size: 'A4' })
-    }
-    const chunkH = chunks[i]
-    canvg.resize(width, chunkH)
-    canvg.start({ offsetY: 0 - offsetY })
-    offsetY += chunkH
-    doc.image(canvas.toDataURL('image/png'), 0, 0, {
-      width: pdfPageSize.width,
-      height: pdfPageSize.height,
-    })
-  }
-  doc.end()
-  stream.on('finish', function () {
-    const blob = stream.toBlob('application/pdf')
-    autoDownloadBlob('test', blob)
-  })
-  canvg.stop()
 }
 
 </script>

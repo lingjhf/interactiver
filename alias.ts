@@ -6,6 +6,7 @@ function r(p: string) {
 
 export const alias: Record<string, string> = {
   '@interactiver/core': r('./packages/core/src/'),
+  '@interactiver/export-file': r('./packages/export-file/src/'),
   '@interactiver/virtual-list': r('./packages/virtual-list/src/'),
   '@interactiver/scrollbar': r('./packages/scrollbar/src/'),
   '@interactiver/utils': r('./packages/utils/src/'),

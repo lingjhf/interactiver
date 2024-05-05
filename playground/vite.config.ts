@@ -36,6 +36,9 @@ export default defineConfig({
       dts: 'src/auto-imports.d.ts',
     }),
   ],
+  // optimizeDeps: {
+  //   include: ['plugins/*.js'],
+  // },
   resolve: {
     alias,
   },
