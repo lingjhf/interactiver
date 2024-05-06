@@ -1,5 +1,6 @@
 <template>
-  <div class='flex flex-col h-full pt-2'>
+  <div class='flex flex-col h-full pt-2 px-2'>
+    {{ columns }}
     <state-list-provider>
       <state-list-header />
       <state-list
@@ -11,15 +12,30 @@
             <a-input
               v-model='item.name'
               :disabled="item.state ==='remove'"
+              placeholder='name'
             />
             <a-select
               :disabled="item.state ==='remove'"
-            />
-            <a-checkbox>
+              placeholder='type'
+            >
+              <a-option
+                v-for='option in dataTypes'
+                :key='option.value'
+                :value='option.value'
+              >
+                {{ option.name }}
+              </a-option>
+            </a-select>
+            <a-checkbox
+              v-model='item.nullable'
+              class='p-0 w-9 flex-shrink-0'
+            >
               <template #checkbox='{ checked }'>
                 <a-tag
                   checkable
                   :checked='checked'
+                  class='p-0 h-full w-full flex justify-center items-center'
+                  color='blue'
                 >
                   <icon-question class='text-20px' />
                 </a-tag>
@@ -31,11 +47,16 @@
               placeholder='(NULL)'
             />
 
-            <a-checkbox>
+            <a-checkbox
+              v-model='item.primary'
+              class='p-0 w-9 flex-shrink-0'
+            >
               <template #checkbox='{ checked }'>
                 <a-tag
                   checkable
                   :checked='checked'
+                  class='p-0 h-full w-full flex justify-center items-center'
+                  color='blue'
                 >
                   <IconKeyVerticalOutline class='text-20px' />
                 </a-tag>
@@ -51,6 +72,7 @@
 
 <script setup lang="ts">
 
+import { dataTypes } from './constants'
 import type { DatabaseTableColumnsProps } from './types'
 import type { DatabaseTableField } from '../../types'
 
@@ -80,15 +102,4 @@ function setDefaultColumns() {
     unique: false,
   }]
 }
-
-function addColumn() {
-  columns.value.push({
-    name: '',
-    type: '',
-    nullable: false,
-    primary: false,
-    unique: false,
-  })
-}
-
 </script>

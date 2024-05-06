@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { StateListProviderKey } from './provider'
-import type { StateListProps, StateListItem } from './types'
+import type { StateListItem } from './types'
 
 const items = ref<StateListItem[]>([])
 let sourceItems: StateListItem[] = []

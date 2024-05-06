@@ -32,7 +32,7 @@ if (!providerValue) {
   throw Error('Must be used with StateListProvider')
 }
 
-const { items, setItems, removeItem } = providerValue
+const { items, setItems, removeItem, itemsChanged } = providerValue
 
 const props = withDefaults(defineProps<StateListProps>(), {
   data: () => [],
@@ -41,7 +41,7 @@ const props = withDefaults(defineProps<StateListProps>(), {
 const emit = defineEmits<StateListEmits>()
 
 watch(() => props.data, () => {
-  setItems(props.data)
+  setItems(JSON.parse(JSON.stringify(props.data)))
 },
 {
   immediate: true,
