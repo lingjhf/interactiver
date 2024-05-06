@@ -11,7 +11,6 @@
         class='ml-auto'
         size='mini'
         type='text'
-        @click='add'
       >
         <template #icon>
           <icon-plus />

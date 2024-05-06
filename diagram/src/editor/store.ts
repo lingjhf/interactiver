@@ -1,5 +1,3 @@
-
-
 export const useCounterStore = defineStore('editor', () => {
   const count = ref(0)
   const doubleCount = computed(() => count.value * 2)
