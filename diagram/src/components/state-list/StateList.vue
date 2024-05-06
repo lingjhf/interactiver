@@ -25,20 +25,18 @@
 import { IconClose, IconUndo } from '@arco-design/web-vue/es/icon'
 
 import { StateListProviderKey } from './provider'
-import type { StateListProps, StateListItem, StateListEmits } from './types'
+import type { StateListProps, StateListItem } from './types'
 
 const providerValue = inject(StateListProviderKey)
 if (!providerValue) {
   throw Error('Must be used with StateListProvider')
 }
 
-const { items, setItems, removeItem, itemsChanged } = providerValue
+const { items, setItems, removeItem } = providerValue
 
 const props = withDefaults(defineProps<StateListProps>(), {
   data: () => [],
 })
-
-const emit = defineEmits<StateListEmits>()
 
 watch(() => props.data, () => {
   setItems(JSON.parse(JSON.stringify(props.data)))

@@ -1,7 +1,7 @@
 <template>
   <div class='flex flex-col h-full pt-2 px-2'>
     {{ columns }}
-    <state-list-provider>
+    <state-list-provider @apply='applyColumns'>
       <state-list-header />
       <state-list
         class='mt-2'
@@ -72,26 +72,10 @@
 
 <script setup lang="ts">
 
-import { dataTypes } from './constants'
-import type { DatabaseTableColumnsProps } from './types'
-import type { DatabaseTableField } from '../../types'
+import { dataTypes } from '../constants'
+import type { DatabaseTableField } from '../types'
 
-const props = withDefaults(defineProps<DatabaseTableColumnsProps>(), {
-  data: () => [],
-})
-
-const columns = ref<DatabaseTableField[]>(props.data)
-
-watch(() => props.data, () => {
-  if (props.data.length > 0) {
-    columns.value = props.data
-  }
-  else {
-    setDefaultColumns()
-  }
-}, {
-  immediate: true,
-})
+const columns = ref<DatabaseTableField[]>([])
 
 function setDefaultColumns() {
   columns.value = [{
@@ -101,5 +85,9 @@ function setDefaultColumns() {
     primary: false,
     unique: false,
   }]
+}
+
+function applyColumns() {
+
 }
 </script>

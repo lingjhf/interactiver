@@ -3,7 +3,7 @@ export interface StateListProps {
 }
 
 export type StateListEmits = {
-  'update:data': [value: StateListItem[]],
+  apply: [value: StateListItem[]],
 }
 
 export interface StateListItem {

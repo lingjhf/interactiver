@@ -17,14 +17,6 @@
 </template>
 
 <script setup lang="ts">
-import type { DatabaseTableStructureProps } from './types'
-
-const props = withDefaults(defineProps<DatabaseTableStructureProps>(), {
-  name: '',
-  comment: '',
-  fields: () => [],
-  color: '',
-})
 
 const tabs = ref(['Columns', 'Indexes', 'Relations'])
 const currentTab = ref('Columns')

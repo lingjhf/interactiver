@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DatabaseTable } from '../types'
+import type { DatabaseTable } from './types'
 
 const tables = ref<DatabaseTable[]>([
   { name: 'user', comment: '', fields: [

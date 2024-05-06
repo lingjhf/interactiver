@@ -53,6 +53,9 @@ importers:
       hotkeys-js:
         specifier: ^3.13.7
         version: 3.13.7
+      pinia:
+        specifier: ^2.1.7
+        version: 2.1.7(typescript@5.4.2)(vue@3.4.21)
       pixi.js:
         specifier: ^8.1.0
         version: 8.1.0
@@ -4998,6 +5001,24 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
+  /pinia@2.1.7(typescript@5.4.2)(vue@3.4.21):
+    resolution: {integrity: sha512-+C2AHFtcFqjPih0zpYuvof37SFxMQ7OEG2zV9jRI12i9BOy3YQVAHwdKtyyc8pDcDyIc33WCIsZaCFWU7WWxGQ==}
+    peerDependencies:
+      '@vue/composition-api': ^1.4.0
+      typescript: '>=4.4.4'
+      vue: ^2.6.14 || ^3.3.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@vue/devtools-api': 6.6.1
+      typescript: 5.4.2
+      vue: 3.4.21(typescript@5.4.2)
+      vue-demi: 0.14.7(vue@3.4.21)
+    dev: false
+
   /pixi.js@8.1.0:
     resolution: {integrity: sha512-qclFipWxKavNZoOE0QjGgEklbxjc1mpHf46adsxYLz7O7RnV44PPkq1J5Ssa6y1JxtYUX0fwbphoE/gz276glA==}
     dependencies:
@@ -6370,7 +6391,6 @@ packages:
         optional: true
     dependencies:
       vue: 3.4.21(typescript@5.4.2)
-    dev: true
 
   /vue-eslint-parser@9.4.2(eslint@8.57.0):
     resolution: {integrity: sha512-Ry9oiGmCAK91HrKMtCrKFWmSFWvYkpGglCeFAIqDdr9zdXmMMpJOmUJS7WWsW7fX81h6mwHmUZCQQ1E0PkSwYQ==}

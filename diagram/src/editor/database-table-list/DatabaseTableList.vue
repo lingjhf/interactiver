@@ -48,25 +48,10 @@
 import { TreeNodeData } from '@arco-design/web-vue'
 import { IconDown, IconPlus } from '@arco-design/web-vue/es/icon'
 
-import { DatabaseTableListProps } from './types'
-import { DatabaseTable } from '../../types'
-
-const props = withDefaults(defineProps<DatabaseTableListProps>(), {
-  data: () => [],
-})
-
-const emit = defineEmits<{
-  add: [],
-}>()
+import { DatabaseTable } from '../types'
 
 const treeData = ref<TreeNodeData[]>([])
 const expandedKeys = ref<string[]>([])
-
-watch(() => props.data, () => {
-  initTreeData(props.data)
-}, {
-  immediate: true,
-})
 
 function initTreeData(data: DatabaseTable[]) {
   const _treeData: TreeNodeData[] = []
@@ -94,10 +79,6 @@ function initTreeData(data: DatabaseTable[]) {
     }
   }
   treeData.value = _treeData
-}
-
-function add() {
-  emit('add')
 }
 
 </script>

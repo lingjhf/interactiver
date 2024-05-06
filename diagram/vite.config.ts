@@ -14,7 +14,7 @@ export default defineConfig({
     Vue(),
     Components({
       dirs: [
-        'src/components',
+        'src/editor',
         'src/icons',
       ],
       resolvers: [ArcoResolver()],
@@ -23,6 +23,7 @@ export default defineConfig({
     AutoImport({
       imports: [
         'vue',
+        'pinia',
       ],
       resolvers: [ArcoResolver()],
       dirs: [
