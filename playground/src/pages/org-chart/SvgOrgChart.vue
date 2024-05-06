@@ -59,8 +59,6 @@ const nodes = ref<Node[]>([])
 const interactiveRef = shallowRef<SVGElement>()
 const canvasRef = shallowRef<SVGGElement>()
 
-const worker = new Worker(import.meta.resolve('./worker.js'), { type: 'module' })
-
 onMounted(() => {
   initInteractive()
 })
@@ -114,7 +112,7 @@ async function exportPDF() {
     return
   }
   const { x = 0, y = 0, width = 0, height = 0 } = canvasRef.value?.getBoundingClientRect() ?? {}
-  svgToPdf(interactiveRef.value, Math.round(x + width), Math.round(y + height))
+  // svgToPdf(interactiveRef.value, Math.round(x + width), Math.round(y + height))
 }
 
 </script>
