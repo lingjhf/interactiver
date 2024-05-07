@@ -59,6 +59,9 @@ importers:
       pixi.js:
         specifier: ^8.1.0
         version: 8.1.0
+      primevue:
+        specifier: ^3.52.0
+        version: 3.52.0(vue@3.4.21)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -5380,6 +5383,14 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
     dev: true
+
+  /primevue@3.52.0(vue@3.4.21):
+    resolution: {integrity: sha512-HLOVP5YI0ArFKUhIyfZsWmTNMaBYNCBWC/3DYvdd/Po4LY5/WXf7yIYvArE2q/3OuwSXJXvjlR8UNQeJYRSQog==}
+    peerDependencies:
+      vue: ^3.0.0
+    dependencies:
+      vue: 3.4.21(typescript@5.4.2)
+    dev: false
 
   /punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}

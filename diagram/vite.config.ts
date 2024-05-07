@@ -1,7 +1,7 @@
 import Vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
-import { ArcoResolver } from 'unplugin-vue-components/resolvers'
+import { ArcoResolver, PrimeVueResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 
@@ -14,10 +14,10 @@ export default defineConfig({
     Vue(),
     Components({
       dirs: [
-        'src/editor',
+        'src/components',
         'src/icons',
       ],
-      resolvers: [ArcoResolver()],
+      resolvers: [ArcoResolver(), PrimeVueResolver()],
       dts: 'src/components.d.ts',
     }),
     AutoImport({

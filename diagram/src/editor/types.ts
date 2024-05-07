@@ -1,3 +1,5 @@
+import { TreeNodeData as _TreeNodeData } from '@arco-design/web-vue'
+
 export interface DatabaseTable {
   name: string,
   comment: string,
@@ -20,4 +22,8 @@ export interface DatabaseTableInt extends DatabaseTableField {
 
 export interface DatabaseTableVarchar extends DatabaseTableField {
   size: number,
+}
+
+export interface TreeNodeData extends _TreeNodeData {
+  [key: string]: any,
 }

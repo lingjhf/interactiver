@@ -1,14 +1,16 @@
 <template>
   <div class='flex items-center'>
     <div class=' ml-auto [&>:not(first-child)]:ml-2'>
-      <a-button
-        size='mini'
+      <Button
+        class='h-24px'
+        size='small'
         @click='resetItems'
       >
         Reset
-      </a-button>
-      <a-button
-        size='mini'
+      </Button>
+      <Button
+        class='h-24px'
+        size='small'
         @click='applyChanged'
       >
         <span
@@ -16,7 +18,7 @@
           class='mr-1'
         >{{ itemsChanged.length }}</span>
         Apply
-      </a-button>
+      </Button>
     </div>
   </div>
 </template>

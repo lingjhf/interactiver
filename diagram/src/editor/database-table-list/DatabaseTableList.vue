@@ -1,94 +1,113 @@
 <template>
-  <div class='database-table-list'>
+  <div class='database-table-list h-full  flex flex-col'>
     <div class='px-2'>
-      <a-input />
+      <InputText
+        class='w-full'
+        size='small'
+        variant='filled'
+      />
     </div>
-    <div class='flex pt px-3 items-center'>
+    <div class='flex pt-2 px-3 items-center'>
       <div>
         Tables
       </div>
-      <a-button
-        class='ml-auto'
-        size='mini'
-        type='text'
+      <Button
+        class='w-32px h-32px ml-auto'
+        rounded
+        @click='addTable'
       >
         <template #icon>
           <icon-plus />
         </template>
-      </a-button>
+      </Button>
     </div>
-    <div class='px-2 pt-3'>
-      <a-tree
-        v-model:expanded-keys='expandedKeys'
-        block-node
-        :data='treeData'
-        :show-line='true'
+    <div
+      class=' h-full overflow-auto pt-2'
+    >
+      <Tree
+        v-model:selectionKeys='expandedKeys'
+        class='w-full'
+        :pt='{root:{class:"p-0"}, label:{class:"flex w-full"} }'
+        selection-mode='single'
+        :value='treeData'
+        @node-select='onNodeSelect'
       >
-        <template #title='{title,type,isLeaf}'>
-          <div
-            v-if='isLeaf'
-            class='flex w-full'
-          >
-            <span> {{ title }}</span>
-            <span class='ml-auto'>
-              {{ type }}
-            </span>
-          </div>
-          <div v-else>
-            {{ title }}
+        <template #default='{node}'>
+          <div class='w-full flex items-center'>
+            {{ node.title }}
+            <Button
+              class='w-32px h-32px  ml-auto'
+              text
+              @click='removeTable(node.key)'
+            >
+              <template #icon>
+                <icon-close />
+              </template>
+            </Button>
           </div>
         </template>
-      </a-tree>
+        <template #field='{node}'>
+          <div>
+            {{ node.title }}
+          </div>
+        </template>
+      </Tree>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { TreeNodeData } from '@arco-design/web-vue'
-import { IconDown, IconPlus } from '@arco-design/web-vue/es/icon'
+import { IconPlus, IconClose } from '@arco-design/web-vue/es/icon'
+import { TreeNode } from 'primevue/treenode'
 
+import { useEditorStore } from '../store'
 import { DatabaseTable } from '../types'
+const editorStore = useEditorStore()
 
-const treeData = ref<TreeNodeData[]>([])
+const treeData = ref<TreeNode[]>([])
 const expandedKeys = ref<string[]>([])
 
-function initTreeData(data: DatabaseTable[]) {
-  const _treeData: TreeNodeData[] = []
+watch(() => editorStore.tables, (value) => {
+  treeData.value = generateTreeData(value)
+}, { immediate: true, deep: true })
+
+function generateTreeData(data: DatabaseTable[]) {
+  const treeData: TreeNode[] = []
   for (const table of data) {
-    const children: TreeNodeData[] = []
+    const children: TreeNode[] = []
     if (table.fields.length > 0) {
       for (const field of table.fields) {
         children.push({
           key: field.name,
           title: field.name,
-          type: field.type,
+          type: 'field',
           isLeaf: true,
-          switcherIcon: () => h('div'),
         })
       }
     }
-    if (children.length > 0) {
-      const treeNodeData: TreeNodeData = {
-        key: table.name,
-        title: table.name,
-        children: children,
-        switcherIcon: () => h(IconDown),
-      }
-      _treeData.push(treeNodeData)
+    const treeNodeData: TreeNode = {
+      key: table.name,
+      title: table.name,
+      children: children,
     }
+    treeData.push(treeNodeData)
   }
-  treeData.value = _treeData
+  return treeData
 }
 
+function addTable() {
+  editorStore.addTable({ name: `table_${treeData.value.length}`, comment: '', fields: [] })
+}
+
+function removeTable(key?: string) {
+  if (key) {
+    editorStore.removeTable(key)
+  }
+}
+
+function onNodeSelect(value: TreeNode) {
+  if (value.key) {
+    editorStore.setCurrentTable(value.key)
+  }
+}
 </script>
-
-<style>
-.database-table-list .arco-tree-node-is-leaf .arco-tree-node-switcher{
-  width: 0;
-  margin: 0;
-}
-
-.database-table-list .arco-tree-node-title-text{
-  width: 100%;
-}
-</style>

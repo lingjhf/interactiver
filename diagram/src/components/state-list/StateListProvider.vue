@@ -4,9 +4,9 @@
 
 <script setup lang="ts">
 import { StateListProviderKey } from './provider'
-import type { StateListItem, StateListEmits } from './types'
+import type { StateListItem, StateListProviderProps } from './types'
 
-const emit = defineEmits<StateListEmits>()
+const props = defineProps<StateListProviderProps>()
 
 const items = ref<StateListItem[]>([])
 let sourceItems: StateListItem[] = []
@@ -31,14 +31,17 @@ function applyChanged() {
     return
   }
   const _items: StateListItem[] = []
-  for (const item of items.value) {
+  for (let item of items.value) {
+    item = { ...item }
     if (item.state !== 'remove') {
       item.state = undefined
       _items.push(item)
     }
   }
+  if (props.apply && !props.apply(_items)) {
+    return
+  }
   setItems(_items)
-  emit('apply', items.value)
 }
 
 function addItem(item: StateListItem) {

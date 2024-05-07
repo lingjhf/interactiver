@@ -1,14 +1,14 @@
 <template>
   <div class='flex'>
-    <a-button
-      class='ml-auto'
-      shape='circle'
+    <Button
+      class='ml-auto w-32px h-32px'
+      rounded
       @click='add'
     >
       <template #icon>
         <icon-plus />
       </template>
-    </a-button>
+    </Button>
   </div>
 </template>
 
@@ -17,14 +17,13 @@
 import { IconPlus } from '@arco-design/web-vue/es/icon'
 
 import { StateListProviderKey } from './provider'
-import type { StateListProps, StateListItem } from './types'
 
 const providerValue = inject(StateListProviderKey)
 if (!providerValue) {
   throw Error('Must be used with StateListProvider')
 }
 
-const { items, setItems, addItem, removeItem } = providerValue
+const { addItem } = providerValue
 
 function add() {
   addItem({})

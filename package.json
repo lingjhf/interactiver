@@ -29,6 +29,7 @@
     "hotkeys-js": "^3.13.7",
     "pinia": "^2.1.7",
     "pixi.js": "^8.1.0",
+    "primevue": "^3.52.0",
     "uuid": "^9.0.1",
     "vue": "^3.4.21",
     "vue-router": "4",

@@ -2,8 +2,8 @@ export interface StateListProps {
   data: StateListItem[],
 }
 
-export type StateListEmits = {
-  apply: [value: StateListItem[]],
+export type StateListProviderProps = {
+  apply?: (value: any) => boolean,
 }
 
 export interface StateListItem {

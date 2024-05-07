@@ -1,10 +1,17 @@
 <template>
-  <div class='flex flex-col h-full pt-2 px-2'>
-    {{ columns }}
-    <state-list-provider @apply='applyColumns'>
-      <state-list-header />
+  <div class='flex flex-col h-full pt-2 '>
+    <Message
+      v-if='errorMessage'
+      class='mx-2'
+      :closable='false'
+      severity='error'
+    >
+      {{ errorMessage }}
+    </Message>
+    <state-list-provider :apply='applyColumns'>
+      <state-list-header class='px-2' />
       <state-list
-        class='mt-2'
+        class='mt-2 px-2'
         :data='columns'
       >
         <template #default='{item}'>
@@ -46,7 +53,6 @@
               :disabled="item.state ==='remove'"
               placeholder='(NULL)'
             />
-
             <a-checkbox
               v-model='item.primary'
               class='p-0 w-9 flex-shrink-0'
@@ -73,21 +79,37 @@
 <script setup lang="ts">
 
 import { dataTypes } from '../constants'
+import { useEditorStore } from '../store'
 import type { DatabaseTableField } from '../types'
 
+const editorStore = useEditorStore()
+
+const errorMessage = ref('')
 const columns = ref<DatabaseTableField[]>([])
 
-function setDefaultColumns() {
-  columns.value = [{
-    name: '123',
-    type: '',
-    nullable: false,
-    primary: false,
-    unique: false,
-  }]
-}
+watch(() => editorStore.currentTable, () => {
+  columns.value = editorStore.currentTable?.fields ?? []
+}, {
+  immediate: true,
+})
 
-function applyColumns() {
-
+function applyColumns(items: DatabaseTableField[]) {
+  const set = new Set()
+  for (const item of items) {
+    if (set.has(item.name)) {
+      errorMessage.value = `字段 ${item.name} 重复`
+      return false
+    }
+    if (!item.name) {
+      errorMessage.value = '字段不能为空'
+      return false
+    }
+    set.add(item.name)
+  }
+  errorMessage.value = ''
+  if (editorStore.currentTable) {
+    editorStore.updateTable(editorStore.currentTable.name, { fields: items })
+  }
+  return true
 }
 </script>
