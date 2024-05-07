@@ -46,7 +46,7 @@ function applyChanged() {
 
 function addItem(item: StateListItem) {
   item.state = 'add'
-  items.value.push(item)
+  items.value.push(props.addItem?.(item) ?? item)
 }
 
 function removeItem(index: number) {

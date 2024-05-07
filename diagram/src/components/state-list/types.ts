@@ -3,6 +3,7 @@ export interface StateListProps {
 }
 
 export type StateListProviderProps = {
+  addItem?: (item: StateListItem) => StateListItem,
   apply?: (value: any) => boolean,
 }
 

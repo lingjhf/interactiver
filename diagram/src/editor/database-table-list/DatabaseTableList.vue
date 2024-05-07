@@ -31,6 +31,7 @@
         selection-mode='single'
         :value='treeData'
         @node-select='onNodeSelect'
+        @node-unselect='onNodeUnselect'
       >
         <template #default='{node}'>
           <div class='w-full flex items-center'>
@@ -49,6 +50,9 @@
         <template #field='{node}'>
           <div>
             {{ node.title }}
+          </div>
+          <div class='ml-auto'>
+            {{ node.fieldType }}
           </div>
         </template>
       </Tree>
@@ -81,7 +85,7 @@ function generateTreeData(data: DatabaseTable[]) {
           key: field.name,
           title: field.name,
           type: 'field',
-          isLeaf: true,
+          fieldType: field.type,
         })
       }
     }
@@ -106,8 +110,10 @@ function removeTable(key?: string) {
 }
 
 function onNodeSelect(value: TreeNode) {
-  if (value.key) {
-    editorStore.setCurrentTable(value.key)
-  }
+  editorStore.setCurrentTable(value.key)
+}
+
+function onNodeUnselect() {
+  editorStore.setCurrentTable(undefined)
 }
 </script>

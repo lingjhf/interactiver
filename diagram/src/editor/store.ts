@@ -24,6 +24,9 @@ export const useEditorStore = defineStore('editor', () => {
     if (!table) {
       return false
     }
+    if (key === currentTable.value?.name) {
+      setCurrentTable(undefined)
+    }
     tableMap.delete(key)
     tables.value.splice(tables.value.findIndex(item => item.name === table.name), 1)
     saveLocationTables(tables.value)
@@ -41,7 +44,11 @@ export const useEditorStore = defineStore('editor', () => {
     saveLocationTables(tables.value)
   }
 
-  function setCurrentTable(key: string) {
+  function setCurrentTable(key?: string) {
+    if (key === undefined) {
+      currentTable.value = undefined
+      return
+    }
     if (currentTable.value?.name !== key) {
       currentTable.value = tableMap.get(key)
     }

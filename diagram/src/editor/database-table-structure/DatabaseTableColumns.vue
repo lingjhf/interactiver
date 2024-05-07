@@ -8,7 +8,10 @@
     >
       {{ errorMessage }}
     </Message>
-    <state-list-provider :apply='applyColumns'>
+    <state-list-provider
+      :add-item='addItem'
+      :apply='applyColumns'
+    >
       <state-list-header class='px-2' />
       <state-list
         class='mt-2 px-2'
@@ -22,6 +25,7 @@
               placeholder='name'
             />
             <a-select
+              v-model='item.type'
               :disabled="item.state ==='remove'"
               placeholder='type'
             >
@@ -78,6 +82,7 @@
 
 <script setup lang="ts">
 
+import { StateListItem } from '../../components/state-list/types'
 import { dataTypes } from '../constants'
 import { useEditorStore } from '../store'
 import type { DatabaseTableField } from '../types'
@@ -92,6 +97,11 @@ watch(() => editorStore.currentTable, () => {
 }, {
   immediate: true,
 })
+
+function addItem(item: StateListItem) {
+  item.type = 'int'
+  return item
+}
 
 function applyColumns(items: DatabaseTableField[]) {
   const set = new Set()
