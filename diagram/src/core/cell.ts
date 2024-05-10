@@ -71,6 +71,10 @@ export class Cell {
     return this
   }
 
+  remove(){
+    
+  }
+
   add(): this {
     return this
   }
