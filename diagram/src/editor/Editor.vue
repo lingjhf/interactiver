@@ -7,7 +7,13 @@
       <database-table-list :data='tables' />
     </sidebar>
     <e-canvas class='w-full h-full'>
-      <e-table />
+      <e-table>
+        <e-column />
+      </e-table>
+
+      <e-table>
+        <e-column />
+      </e-table>
     </e-canvas>
 
     <div
@@ -21,6 +27,7 @@
 
 <script setup lang="ts">
 import ECanvas from './canvas/Canvas.vue'
+import EColumn from './canvas/Column.vue'
 import ETable from './canvas/Table.vue'
 import { DatabaseTableList } from './database-table-list'
 import { DatabaseTableStructure } from './database-table-structure'
