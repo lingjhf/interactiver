@@ -32,10 +32,10 @@ function onPointerenter() {
 
 const dragHandler = createDragHandler({
   start(event) {
-
+    console.log(event.target)
   },
   move(event) {
-
+    
   },
 })
 
