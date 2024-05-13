@@ -11,32 +11,41 @@
 </template>
 
 <script setup lang="ts">
-import * as d3 from 'd3'
-import { v4 as uuid } from 'uuid'
-
 import { CanvasProviderKey } from './provider'
 import { createDragHandler } from './utils'
+import { Edge, Point, Node } from '../../core'
+
 const providerValue = inject(CanvasProviderKey)
 if (!providerValue) {
   throw Error('Must be used with CanvasProvider')
 }
 
-const { addColumn } = providerValue
-const key = uuid()
+const { edges, setCurrentEdge, getEventGlobalPosition, getGlobalPosition } = providerValue
 
-addColumn(key)
+const relations = new Map<string, Edge<Node>>()
+const node = new Node()
 
 function onPointerenter() {
-  console.log('ok')
+
 }
 
-const dragHandler = createDragHandler({
-  start(event) {
-    console.log(event.target)
-  },
-  move(event) {
-    
-  },
-})
+function dragHandler(event: PointerEvent) {
+  const edge = new Edge({ source: node, target: new Node() })
+  createDragHandler({
+    start(event) {
+      const div = event.target as HTMLDivElement
+      const { x, y } = div.getBoundingClientRect()
+      edge.source.position.set(getGlobalPosition(new Point({ x, y })))
+      relations.set(edge.id, edge)
+    },
+    move(event) {
+      edge.target.position.set(getEventGlobalPosition(event))
+      setCurrentEdge(edge)
+    },
+    end() {
+      setCurrentEdge()
+    },
+  })(event)
+}
 
 </script>

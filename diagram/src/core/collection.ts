@@ -42,7 +42,7 @@ export class Collection extends EventEmitter<{ added: { cell: Cell, index: numbe
       this._cells.splice(index, 1)
       this._length -= 1
       this.deleteRef(cell)
-      cell.remove()
+      // cell.remove()
       this.emit('removed', { cell, index })
     }
     return this
